@@ -10,12 +10,20 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.view.Gravity
 import android.view.View
-import android.webkit.*
+import android.webkit.CookieManager
+import android.webkit.URLUtil
+import android.webkit.ValueCallback
+import android.webkit.WebChromeClient
+import android.webkit.WebResourceError
+import android.webkit.WebResourceRequest
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.ProgressBar
@@ -25,6 +33,8 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import java.io.File
@@ -47,7 +57,6 @@ class MainActivity : AppCompatActivity() {
     private var cameraImageUri: Uri? = null
 
     private lateinit var filePickerLauncher: ActivityResultLauncher<Intent>
-    private lateinit var cameraLauncher: ActivityResultLauncher<Uri>
 
     private val targetUrl = "https://amvajsarmad.com"
     private var isOffline = false
@@ -88,10 +97,9 @@ class MainActivity : AppCompatActivity() {
             cacheMode = WebSettings.LOAD_DEFAULT
             mediaPlaybackRequiresUserGesture = false
             mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
-            userAgentString = "${settings.userAgentString} AmvajSarmadAndroidApp/1.0.0"
+            userAgentString = "${settings.userAgentString ?: ""} AmvajSarmadAndroidApp/1.0.0"
         }
 
-        // Django and ArvanCloud Cookie Persistence
         val cookieManager = CookieManager.getInstance()
         cookieManager.setAcceptCookie(true)
         cookieManager.setAcceptThirdPartyCookies(webView, true)
@@ -192,7 +200,6 @@ class MainActivity : AppCompatActivity() {
         val uri = Uri.parse(url)
         val host = uri.host?.lowercase(Locale.ROOT) ?: ""
 
-        // Native schemes
         if (url.startsWith("tel:") || url.startsWith("mailto:") ||
             url.startsWith("sms:") || url.startsWith("whatsapp:") ||
             url.startsWith("tg:")
@@ -205,46 +212,49 @@ class MainActivity : AppCompatActivity() {
             return true
         }
 
-        // Iranian payment gateway handling (must remain inside WebView to complete banking transaction)
         val isBankingGateway = host.endsWith("shaparak.ir") ||
                 host.contains("zarinpal.com") ||
                 host.contains("idpay.ir") ||
                 host.contains("pay.ir") ||
-                host.contains("nextpay.org")
+                host.contains("nextpay.org") ||
+                host.contains("sadadpsp.ir") ||
+                host.contains("asanpardakht.ir")
 
-        // Internal Amvaj Sarmad pages
         val isInternalDomain = host == "amvajsarmad.com" || host.endsWith(".amvajsarmad.com")
 
         return if (isInternalDomain || isBankingGateway) {
-            false // Let WebView load it directly
+            false
         } else {
-            // Open external third-party links in system browser
             try {
                 val intent = Intent(Intent.ACTION_VIEW, uri)
                 startActivity(intent)
             } catch (e: Exception) {
-                // Fallback
+                // Ignore if no browser available
             }
             true
         }
     }
 
     private fun handleDownload(
-        url: String,
-        userAgent: String,
-        contentDisposition: String,
-        mimeType: String
+        url: String?,
+        userAgent: String?,
+        contentDisposition: String?,
+        mimeType: String?
     ) {
+        if (url.isNullOrEmpty()) return
         try {
             val request = DownloadManager.Request(Uri.parse(url))
             val filename = URLUtil.guessFileName(url, contentDisposition, mimeType)
 
             val cookies = CookieManager.getInstance().getCookie(url)
-            request.addRequestHeader("cookie", cookies)
-            request.addRequestHeader("User-Agent", userAgent)
+            if (!cookies.isNullOrEmpty()) {
+                request.addRequestHeader("cookie", cookies)
+            }
+            if (!userAgent.isNullOrEmpty()) {
+                request.addRequestHeader("User-Agent", userAgent)
+            }
             request.setDescription(getString(R.string.download_started))
             request.setTitle(filename)
-            request.allowScanningByMediaScanner()
             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
             request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, filename)
 
@@ -289,17 +299,6 @@ class MainActivity : AppCompatActivity() {
             fileUploadCallback?.onReceiveValue(results)
             fileUploadCallback = null
         }
-
-        cameraLauncher = registerForActivityResult(
-            ActivityResultContracts.TakePicture()
-        ) { success ->
-            var results: Array<Uri>? = null
-            if (success && cameraImageUri != null) {
-                results = arrayOf(cameraImageUri!!)
-            }
-            fileUploadCallback?.onReceiveValue(results)
-            fileUploadCallback = null
-        }
     }
 
     private fun openFileSelector() {
@@ -319,7 +318,7 @@ class MainActivity : AppCompatActivity() {
             if (photoFile != null) {
                 cameraImageUri = FileProvider.getUriForFile(
                     this,
-                    "com.amvajsarmad.app.fileprovider",
+                    "${applicationContext.packageName}.fileprovider",
                     photoFile
                 )
                 cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, cameraImageUri)
@@ -397,18 +396,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun buildDynamicLayout(): View {
-        val root = androidx.constraintlayout.widget.ConstraintLayout(this).apply {
-            layoutParams = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams(
-                androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.MATCH_PARENT,
-                androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.MATCH_PARENT
+        val root = ConstraintLayout(this).apply {
+            layoutParams = ConstraintLayout.LayoutParams(
+                ConstraintLayout.LayoutParams.MATCH_PARENT,
+                ConstraintLayout.LayoutParams.MATCH_PARENT
             )
         }
 
         swipeRefresh = SwipeRefreshLayout(this).apply {
             id = View.generateViewId()
-            layoutParams = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams(
-                androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.MATCH_PARENT,
-                androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.MATCH_PARENT
+            layoutParams = ConstraintLayout.LayoutParams(
+                ConstraintLayout.LayoutParams.MATCH_PARENT,
+                ConstraintLayout.LayoutParams.MATCH_PARENT
             )
         }
 
@@ -425,15 +424,12 @@ class MainActivity : AppCompatActivity() {
         progressBar = ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal).apply {
             id = View.generateViewId()
             max = 100
-            progressDrawable.setColorFilter(
-                resources.getColor(R.color.primary, theme),
-                android.graphics.PorterDuff.Mode.SRC_IN
-            )
-            val lp = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams(
-                androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.MATCH_PARENT,
+            progressDrawable?.setTint(ContextCompat.getColor(this@MainActivity, R.color.primary))
+            val lp = ConstraintLayout.LayoutParams(
+                ConstraintLayout.LayoutParams.MATCH_PARENT,
                 8
             )
-            lp.topToTop = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID
+            lp.topToTop = ConstraintLayout.LayoutParams.PARENT_ID
             layoutParams = lp
         }
         root.addView(progressBar)
@@ -441,37 +437,37 @@ class MainActivity : AppCompatActivity() {
         errorLayout = LinearLayout(this).apply {
             id = View.generateViewId()
             orientation = LinearLayout.VERTICAL
-            gravity = android.view.Gravity.CENTER
-            setBackgroundColor(resources.getColor(R.color.background_light, theme))
+            gravity = Gravity.CENTER
+            setBackgroundColor(ContextCompat.getColor(this@MainActivity, R.color.background_light))
             visibility = View.GONE
             setPadding(48, 48, 48, 48)
-            val lp = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams(
-                androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.MATCH_PARENT,
-                androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.MATCH_PARENT
+            val lp = ConstraintLayout.LayoutParams(
+                ConstraintLayout.LayoutParams.MATCH_PARENT,
+                ConstraintLayout.LayoutParams.MATCH_PARENT
             )
             layoutParams = lp
         }
 
         tvErrorTitle = TextView(this).apply {
             textSize = 20f
-            setTextColor(resources.getColor(R.color.text_primary, theme))
-            gravity = android.view.Gravity.CENTER
+            setTextColor(ContextCompat.getColor(this@MainActivity, R.color.text_primary))
+            gravity = Gravity.CENTER
             setPadding(0, 24, 0, 16)
         }
         errorLayout.addView(tvErrorTitle)
 
         tvErrorDesc = TextView(this).apply {
             textSize = 14f
-            setTextColor(resources.getColor(R.color.text_secondary, theme))
-            gravity = android.view.Gravity.CENTER
+            setTextColor(ContextCompat.getColor(this@MainActivity, R.color.text_secondary))
+            gravity = Gravity.CENTER
             setPadding(0, 0, 0, 32)
         }
         errorLayout.addView(tvErrorDesc)
 
         btnRetry = Button(this).apply {
             text = getString(R.string.btn_retry)
-            setBackgroundColor(resources.getColor(R.color.primary, theme))
-            setTextColor(resources.getColor(R.color.surface, theme))
+            setBackgroundColor(ContextCompat.getColor(this@MainActivity, R.color.primary))
+            setTextColor(ContextCompat.getColor(this@MainActivity, R.color.surface))
         }
         errorLayout.addView(btnRetry)
 

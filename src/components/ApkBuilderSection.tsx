@@ -13,6 +13,7 @@ import {
   FolderGit2,
 } from 'lucide-react';
 import { generateAndDownloadProjectZip } from '../utils/zipExporter';
+import { GITHUB_WORKFLOW_YML } from '../data/projectFiles';
 
 export const ApkBuilderSection: React.FC = () => {
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
@@ -57,24 +58,34 @@ export const ApkBuilderSection: React.FC = () => {
       <div className="bg-gradient-to-r from-sky-900 to-indigo-950 border border-sky-700/60 rounded-3xl p-6 sm:p-8 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
         <div>
           <span className="text-xs uppercase font-extrabold tracking-wider bg-sky-500/20 text-sky-300 border border-sky-400/30 px-3 py-1 rounded-full">
-            پروژه آماده بیلد ۱۰۰٪ ماژولار
+            پروژه آماده بیلد ۱۰۰٪ ماژولار (نسخه اصلاح‌شده بدون ارور Lockfile و SDK)
           </span>
           <h2 className="text-xl sm:text-2xl font-black mt-3">
             دریافت پکیج کامل سورس Tauri 2 + Android Native
           </h2>
           <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl leading-relaxed">
-            شامل ساختار کامل <code className="text-sky-300 font-mono">src-tauri/</code>، پروژه‌ی کامل Gradle اندروید، فایل مانیفست با پشتیبانی عمیق از <code className="text-sky-300 font-mono">amvajsarmad.com</code>، ورک‌فلو گیت‌هاب اکشنز و اسکریپت‌های بیلد یک‌کلیکی.
+            شامل ساختار کامل <code className="text-sky-300 font-mono">src-tauri/</code>، پروژه‌ی کامل Gradle اندروید، آیکون برداری، فایل مانیفست با پشتیبانی عمیق از <code className="text-sky-300 font-mono">amvajsarmad.com</code> و ورک‌فلو خودترمیم‌گر گیت‌هاب اکشنز.
           </p>
         </div>
 
-        <button
-          onClick={handleDownload}
-          disabled={isGeneratingZip}
-          className="bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-extrabold text-sm sm:text-base px-7 py-3.5 rounded-2xl shadow-lg shadow-emerald-500/20 transition-all hover:scale-105 active:scale-95 disabled:opacity-50 flex items-center gap-2.5 shrink-0"
-        >
-          <Download className="w-5 h-5 text-slate-950" />
-          <span>{isGeneratingZip ? 'در حال ایجاد فایل ZIP...' : 'دانلود مستقیم پروژه (.ZIP)'}</span>
-        </button>
+        <div className="flex flex-col sm:flex-row items-center gap-3 shrink-0">
+          <button
+            onClick={() => copyToClipboard(GITHUB_WORKFLOW_YML, 'workflow')}
+            className="bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs sm:text-sm px-5 py-3.5 rounded-2xl shadow-lg shadow-sky-500/20 transition-all flex items-center gap-2"
+          >
+            {copiedKey === 'workflow' ? <CheckCircle2 className="w-4 h-4 text-emerald-200" /> : <Copy className="w-4 h-4" />}
+            <span>{copiedKey === 'workflow' ? 'کد build-apk.yml کپی شد!' : 'کپی کد اصلاح‌شده build-apk.yml'}</span>
+          </button>
+
+          <button
+            onClick={handleDownload}
+            disabled={isGeneratingZip}
+            className="bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-extrabold text-sm sm:text-base px-6 py-3.5 rounded-2xl shadow-lg shadow-emerald-500/20 transition-all hover:scale-105 active:scale-95 disabled:opacity-50 flex items-center gap-2.5 shrink-0"
+          >
+            <Download className="w-5 h-5 text-slate-950" />
+            <span>{isGeneratingZip ? 'در حال ایجاد فایل ZIP...' : 'دانلود مستقیم پروژه (.ZIP)'}</span>
+          </button>
+        </div>
       </div>
 
       {/* 3 Guaranteed Build Pathways */}
@@ -93,12 +104,12 @@ export const ApkBuilderSection: React.FC = () => {
               بیلد در کلاد با GitHub Actions
             </h3>
             <p className="text-xs text-slate-400 leading-relaxed">
-              فایل کامل <code className="text-sky-300 font-mono text-[10px]">.github/workflows/build-apk.yml</code> در پروژه قرار دارد. سرورهای لینوکسی گیت‌هاب با داشتن تمامی پیش‌نیازها فایل APK را در ۳ دقیقه می‌سازند.
+              فایل اصلاح‌شده <code className="text-sky-300 font-mono text-[10px]">.github/workflows/build-apk.yml</code> بدون نیاز به Node lockfile، تمام فایل‌های منابع اندروید را بررسی و APK را تولید می‌کند.
             </p>
 
             <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 text-[11px] space-y-1.5 text-slate-300 font-mono">
               <div className="flex items-center gap-1.5">
-                <span className="text-sky-400">۱.</span> پوشه پروژه را در یک ریپازیتوری GitHub پوش کنید.
+                <span className="text-sky-400">۱.</span> کد اصلاح‌شده <strong>build-apk.yml</strong> را در گیت‌هاب جایگزین کنید.
               </div>
               <div className="flex items-center gap-1.5">
                 <span className="text-sky-400">۲.</span> به تب <strong>Actions</strong> بروید.
@@ -110,11 +121,11 @@ export const ApkBuilderSection: React.FC = () => {
           </div>
 
           <button
-            onClick={() => copyToClipboard('git init && git add . && git commit -m "feat: Amvaj Sarmad Android App" && git branch -M main', 'git')}
-            className="mt-4 w-full bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs py-2 rounded-xl flex items-center justify-center gap-2 transition-colors border border-slate-700"
+            onClick={() => copyToClipboard(GITHUB_WORKFLOW_YML, 'git')}
+            className="mt-4 w-full bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold py-2.5 rounded-xl flex items-center justify-center gap-2 transition-colors"
           >
-            {copiedKey === 'git' ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-            <span>کپی دستورات گیت</span>
+            {copiedKey === 'git' ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-200" /> : <Copy className="w-3.5 h-3.5" />}
+            <span>{copiedKey === 'git' ? 'فایل build-apk.yml کپی شد!' : 'کپی کامل فایل build-apk.yml'}</span>
           </button>
         </div>
 
