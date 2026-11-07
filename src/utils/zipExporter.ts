@@ -9,6 +9,12 @@ export async function generateAndDownloadProjectZip(): Promise<void> {
     zip.file(file.path, file.content);
   }
 
+  // Add gradle wrapper properties
+  zip.file(
+    "src-tauri/gen/android/gradle/wrapper/gradle-wrapper.properties",
+    `distributionBase=GRADLE_USER_HOME\ndistributionPath=wrapper/dists\ndistributionUrl=https\\://services.gradle.org/distributions/gradle-8.5-bin.zip\nnetworkTimeout=10000\nvalidateDistributionUrl=true\nzipStoreBase=GRADLE_USER_HOME\nzipStorePath=wrapper/dists\n`
+  );
+
   // Add root package.json for building web dist
   const rootPackageJson = {
     name: "amvaj-sarmad-mobile",

@@ -468,33 +468,58 @@ jobs:
       - name: Setup Java JDK 17
         uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
+          distribution: 'temurin'
           java-version: '17'
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Accept Android SDK Licenses
+        run: |
+          echo "Using Android SDK at: $ANDROID_HOME"
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+
+      - name: Setup Gradle 8.5
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.5'
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
 
-      - name: Install Dependencies & Build
+      - name: Install Node Dependencies
+        run: npm ci || npm install
+
+      - name: Build Web Dist Assets
+        run: npm run build
+
+      - name: Make Gradle Executable
         run: |
-          npm ci || npm install
-          npm run build
+          cd src-tauri/gen/android
+          chmod +x gradlew || gradle wrapper --gradle-version 8.5
+          chmod +x gradlew
 
       - name: Build Android Debug APK
         run: |
           cd src-tauri/gen/android
-          chmod +x gradlew || gradle wrapper
           ./gradlew assembleDebug --stacktrace
+
+      - name: Build Android Release APK
+        run: |
+          cd src-tauri/gen/android
+          ./gradlew assembleRelease --stacktrace
 
       - name: Upload Debug APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: amvaj-sarmad-debug-apk
-          path: src-tauri/gen/android/app/build/outputs/apk/debug/*.apk`
+          path: src-tauri/gen/android/app/build/outputs/apk/debug/*.apk
+
+      - name: Upload Release APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: amvaj-sarmad-release-apk
+          path: src-tauri/gen/android/app/build/outputs/apk/release/*.apk`
   },
   {
     path: 'build-apk.sh',
