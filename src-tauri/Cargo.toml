@@ -1,0 +1,26 @@
+[package]
+name = "amvaj-sarmad-app"
+version = "1.0.0"
+description = "Amvaj Sarmad Android Mobile Application (Tauri 2 + WebView)"
+authors = ["Amvaj Sarmad Engineering <dev@amvajsarmad.com>"]
+edition = "2021"
+default-run = "amvaj-sarmad-app"
+
+[lib]
+name = "amvaj_sarmad_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2.0.0", features = [] }
+
+[dependencies]
+tauri = { version = "2.0.0", features = [] }
+tauri-plugin-opener = "2.0.0"
+tauri-plugin-dialog = "2.0.0"
+tauri-plugin-notification = "2.0.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+[features]
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]

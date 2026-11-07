@@ -1,0 +1,6 @@
+{
+  "name": "Amvaj Sarmad Android App & Tauri 2 Builder",
+  "description": "Production-ready Android mobile application architecture, Tauri 2 Rust source, and WebView emulator for amvajsarmad.com",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

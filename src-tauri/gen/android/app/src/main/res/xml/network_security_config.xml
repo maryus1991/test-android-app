@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- Strictly enforce HTTPS for amvajsarmad.com and all subdomains -->
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">amvajsarmad.com</domain>
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="user" />
+        </trust-anchors>
+    </domain-config>
+
+    <!-- Base config enforces system CAs and blocks arbitrary HTTP cleartext -->
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

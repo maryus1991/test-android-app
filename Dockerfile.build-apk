@@ -1,0 +1,38 @@
+FROM eclipse-temurin:17-jdk-jammy
+
+# Install build essentials and Android dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    git \
+    unzip \
+    build-essential \
+    nodejs \
+    npm \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Android Command Line Tools
+ENV ANDROID_HOME=/opt/android-sdk
+ENV PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
+
+RUN mkdir -p $ANDROID_HOME/cmdline-tools && \
+    curl -o /tmp/cmdline-tools.zip https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip && \
+    unzip -q /tmp/cmdline-tools.zip -d $ANDROID_HOME/cmdline-tools && \
+    mv $ANDROID_HOME/cmdline-tools/cmdline-tools $ANDROID_HOME/cmdline-tools/latest && \
+    rm /tmp/cmdline-tools.zip
+
+# Accept Android licenses and install SDK 34
+RUN yes | sdkmanager --licenses && \
+    sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+
+WORKDIR /app
+COPY . .
+
+# Build assets and assemble APK
+RUN npm ci || npm install
+RUN npm run build
+WORKDIR /app/src-tauri/gen/android
+RUN gradle wrapper || true
+RUN chmod +x gradlew
+RUN ./gradlew assembleDebug
+
+CMD ["cp", "/app/src-tauri/gen/android/app/build/outputs/apk/debug/app-debug.apk", "/out/"]
