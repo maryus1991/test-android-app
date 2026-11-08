@@ -1,13 +1,13 @@
 <resources>
-    <string name="app_name">امواج سرمد</string>
-    <string name="app_name_en">Amvaj Sarmad</string>
-    <string name="website_url">https://amvajsarmad.com</string>
+    <string name="app_name">گروه آموزشی سورنا</string>
+    <string name="app_name_en">Sorna Educational Group</string>
+    <string name="website_url">https://sornac.ir/</string>
     <string name="error_no_internet_title">عدم دسترسی به اینترنت</string>
     <string name="error_no_internet_msg">اتصال دستگاه شما به اینترنت قطع شده است. لطفاً وضعیت وای‌فای یا دیتای سیم‌کارت را بررسی نمایید.</string>
-    <string name="error_server_title">خطا در بارگذاری فروشگاه</string>
-    <string name="error_server_msg">امکان اتصال به سرورهای امواج سرمد فراهم نشد. لطفاً چند لحظه دیگر دوباره تلاش نمایید.</string>
+    <string name="error_server_title">خطا در بارگذاری سامانه سورنا</string>
+    <string name="error_server_msg">امکان اتصال به سرورهای گروه آموزشی سورنا فراهم نشد. لطفاً چند لحظه دیگر دوباره تلاش نمایید.</string>
     <string name="btn_retry">تلاش مجدد</string>
     <string name="btn_check_network">تنظیمات شبکه</string>
-    <string name="download_started">شروع دریافت فایل…</string>
+    <string name="download_started">شروع دریافت فایل آموزشی…</string>
     <string name="download_completed">دریافت فایل با موفقیت انجام شد</string>
 </resources>

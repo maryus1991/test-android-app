@@ -1,13 +1,13 @@
 [package]
-name = "amvaj-sarmad-app"
+name = "sorna-app"
 version = "1.0.0"
-description = "Amvaj Sarmad Android Mobile Application (Tauri 2 + WebView)"
-authors = ["Amvaj Sarmad Engineering <dev@amvajsarmad.com>"]
+description = "Sorna Educational Group Android Mobile Application (Tauri 2 + WebView)"
+authors = ["Sorna Educational Group <info@sornac.ir>"]
 edition = "2021"
-default-run = "amvaj-sarmad-app"
+default-run = "sorna-app"
 
 [lib]
-name = "amvaj_sarmad_lib"
+name = "sorna_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]

@@ -3,54 +3,51 @@ import {
   Smartphone,
   RotateCw,
   ArrowRight,
-  ArrowLeft,
   Lock,
   Wifi,
   WifiOff,
   Battery,
-  Share2,
-  AlertTriangle,
   CheckCircle2,
-  ShoppingBag,
   User,
   CreditCard,
-  Home,
-  Layers,
-  PhoneCall,
-  ExternalLink,
   ShieldAlert,
+  BookOpen,
 } from 'lucide-react';
 import { classifyUrl, getNetworkErrorPersianCopy } from '../utils/navigationRules';
 
 export const AndroidEmulator: React.FC = () => {
-  const [currentUrl, setCurrentUrl] = useState('https://amvajsarmad.com');
-  const [urlInput, setUrlInput] = useState('https://amvajsarmad.com');
+  const [currentUrl, setCurrentUrl] = useState('https://sornac.ir/');
   const [isOnline, setIsOnline] = useState(true);
   const [activePage, setActivePage] = useState<'home' | 'products' | 'cart' | 'login' | 'payment'>('home');
-  const [history, setHistory] = useState<string[]>(['https://amvajsarmad.com']);
+  const [history, setHistory] = useState<string[]>(['https://sornac.ir/']);
   const [historyIndex, setHistoryIndex] = useState(0);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [cartCount, setCartCount] = useState(2);
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
-  const [sessionCookies, setSessionCookies] = useState({
-    sessionid: 'sarmad_sess_89f0a21e4b',
-    csrftoken: 'dj_csrf_9c82b1d34e908f',
-    arvan_arcsco: '1e95725e0d2504bbd06ff820',
+  const [statusNotice, setStatusNotice] = useState<string | null>(null);
+  const [sessionCookies] = useState({
+    sessionid: 'sorna_sess_94b1e72c8a',
+    csrftoken: 'dj_csrf_4f81a2d90e317b',
+    arvan_arcsco: '7c95725e0d2504bbd06ff914',
   });
 
   const [testUrlInput, setTestUrlInput] = useState('https://bpm.shaparak.ir/pay');
   const [lastRouteResult, setLastRouteResult] = useState(() => classifyUrl('https://bpm.shaparak.ir/pay'));
 
+  const showNotice = (msg: string) => {
+    setStatusNotice(msg);
+    setTimeout(() => setStatusNotice(null), 3500);
+  };
+
   const navigateTo = (url: string, pageKey?: 'home' | 'products' | 'cart' | 'login' | 'payment') => {
     const classification = classifyUrl(url);
 
     if (classification.targetAction === 'EXTERNAL_BROWSER') {
-      window.open(url, '_blank');
+      showNotice(`لینک خارجی در مرورگر پیش‌فرض اندروید باز می‌شود: ${url}`);
       return;
     }
 
     if (classification.targetAction === 'NATIVE_INTENT') {
-      alert(`در محیط واقعی اندروید، اینتنت بومی فراخوانی می‌شود: ${url}`);
+      showNotice(`در محیط واقعی اندروید، اینتنت بومی فراخوانی می‌شود: ${url}`);
       return;
     }
 
@@ -58,13 +55,12 @@ export const AndroidEmulator: React.FC = () => {
     setHistory(nextHistory);
     setHistoryIndex(nextHistory.length - 1);
     setCurrentUrl(url);
-    setUrlInput(url);
 
     if (pageKey) {
       setActivePage(pageKey);
     } else if (url.includes('/cart')) {
       setActivePage('cart');
-    } else if (url.includes('/products')) {
+    } else if (url.includes('/courses') || url.includes('/products')) {
       setActivePage('products');
     } else if (url.includes('/login') || url.includes('/account')) {
       setActivePage('login');
@@ -81,14 +77,13 @@ export const AndroidEmulator: React.FC = () => {
       setHistoryIndex(prevIndex);
       const prevUrl = history[prevIndex];
       setCurrentUrl(prevUrl);
-      setUrlInput(prevUrl);
       if (prevUrl.includes('/cart')) setActivePage('cart');
-      else if (prevUrl.includes('/products')) setActivePage('products');
+      else if (prevUrl.includes('/courses') || prevUrl.includes('/products')) setActivePage('products');
       else if (prevUrl.includes('/login')) setActivePage('login');
       else if (prevUrl.includes('shaparak')) setActivePage('payment');
       else setActivePage('home');
     } else {
-      alert('این دکمه در ابتدای تاریخچه است؛ فشردن بیشتر دکمه Back در اندروید باعث خروج از برنامه می‌شود.');
+      showNotice('ابتدای تاریخچه وب‌ویو؛ فشردن مجدد دکمه Back در اندروید از برنامه خارج می‌شود.');
     }
   };
 
@@ -119,13 +114,13 @@ export const AndroidEmulator: React.FC = () => {
           {/* Android Screen Bezel */}
           <div className="w-full h-full bg-slate-950 rounded-[34px] overflow-hidden flex flex-col relative border border-slate-800/80">
             {/* Top Status Bar */}
-            <div className="h-7 bg-slate-900 text-slate-300 text-[11px] px-5 flex items-center justify-between font-mono z-20">
-              <span className="font-semibold text-slate-200">14:35</span>
+            <div className="h-7 bg-[#001F54] text-slate-200 text-[11px] px-5 flex items-center justify-between font-mono z-20">
+              <span className="font-semibold text-white">14:35</span>
               {/* Notch camera */}
               <div className="w-3.5 h-3.5 bg-black rounded-full border border-slate-800 flex items-center justify-center">
                 <div className="w-1.5 h-1.5 bg-slate-900 rounded-full"></div>
               </div>
-              <div className="flex items-center gap-1.5 text-slate-400">
+              <div className="flex items-center gap-1.5 text-slate-300">
                 {isOnline ? (
                   <Wifi className="w-3.5 h-3.5 text-emerald-400" />
                 ) : (
@@ -137,19 +132,19 @@ export const AndroidEmulator: React.FC = () => {
             </div>
 
             {/* App Header & WebView URL Bar */}
-            <div className="bg-sky-900 border-b border-sky-800/60 p-2 z-10 text-white">
+            <div className="bg-[#001F54] border-b border-amber-500/30 p-2 z-10 text-white">
               <div className="flex items-center justify-between gap-1 text-xs">
                 <div className="flex items-center gap-1">
                   <button
                     onClick={handleBack}
-                    className="p-1 hover:bg-sky-800 rounded text-slate-200 transition-colors"
+                    className="p-1 hover:bg-blue-900 rounded text-slate-200 transition-colors"
                     title="بازگشت (Back)"
                   >
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                   <button
                     onClick={handleRefresh}
-                    className="p-1 hover:bg-sky-800 rounded text-slate-200 transition-colors"
+                    className="p-1 hover:bg-blue-900 rounded text-slate-200 transition-colors"
                     title="تازه‌سازی (Reload)"
                   >
                     <RotateCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin' : ''}`} />
@@ -157,7 +152,7 @@ export const AndroidEmulator: React.FC = () => {
                 </div>
 
                 {/* URL display */}
-                <div className="flex-1 bg-sky-950/80 px-2.5 py-1 rounded-full text-[11px] flex items-center gap-1.5 border border-sky-700/50 text-slate-200 truncate font-mono">
+                <div className="flex-1 bg-slate-950/70 px-2.5 py-1 rounded-full text-[11px] flex items-center gap-1.5 border border-amber-500/30 text-slate-200 truncate font-mono" dir="ltr">
                   <Lock className="w-3 h-3 text-emerald-400 shrink-0" />
                   <span className="truncate">{currentUrl.replace('https://', '')}</span>
                 </div>
@@ -169,11 +164,18 @@ export const AndroidEmulator: React.FC = () => {
 
               {/* Native Progress Bar */}
               {isRefreshing && (
-                <div className="w-full h-0.5 bg-sky-950 mt-1 overflow-hidden">
-                  <div className="h-full bg-cyan-400 animate-pulse w-3/4"></div>
+                <div className="w-full h-0.5 bg-slate-950 mt-1 overflow-hidden">
+                  <div className="h-full bg-amber-400 animate-pulse w-3/4"></div>
                 </div>
               )}
             </div>
+
+            {/* Inline Android Toast Notice */}
+            {statusNotice && (
+              <div className="bg-amber-500/95 text-slate-950 text-[11px] font-bold px-3 py-1.5 text-center z-30 shadow">
+                {statusNotice}
+              </div>
+            )}
 
             {/* WebView Body Canvas */}
             <div className="flex-1 bg-slate-900 overflow-y-auto text-slate-100 relative">
@@ -194,13 +196,13 @@ export const AndroidEmulator: React.FC = () => {
                       setIsOnline(true);
                       handleRefresh();
                     }}
-                    className="bg-sky-500 hover:bg-sky-400 text-white font-medium text-xs px-6 py-2.5 rounded-xl shadow-lg shadow-sky-500/20 transition-transform active:scale-95 flex items-center gap-2"
+                    className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs px-6 py-2.5 rounded-xl shadow-lg shadow-amber-500/20 transition-transform active:scale-95 flex items-center gap-2"
                   >
                     <RotateCw className="w-3.5 h-3.5" />
                     <span>{offlineError.canRetry ? 'تلاش مجدد' : 'بستن'}</span>
                   </button>
-                  <p className="text-[10px] text-slate-500 mt-4">
-                    این صفحه با کدهای Kotlin و BroadcastReceiver اختصاصی در زمان قطع شبکه به نمایش درمی‌آید.
+                  <p className="text-[10px] text-slate-400 mt-4">
+                    این صفحه با کدهای Kotlin اختصاصی در زمان قطع شبکه به نمایش درمی‌آید.
                   </p>
                 </div>
               ) : (
@@ -209,29 +211,38 @@ export const AndroidEmulator: React.FC = () => {
                   {/* Page: HOME */}
                   {activePage === 'home' && (
                     <div className="p-4 space-y-4">
-                      {/* Hero Banner */}
-                      <div className="bg-gradient-to-r from-sky-900 to-indigo-950 rounded-2xl p-4 border border-sky-800/50 shadow-md">
-                        <span className="text-[10px] uppercase tracking-wider text-sky-400 font-bold bg-sky-950/60 px-2 py-0.5 rounded">
-                          امواج سرمد
-                        </span>
-                        <h2 className="text-base font-extrabold text-white mt-2">
-                          پلتفرم تخصصی تجهیزات مخابراتی، الکترونیک و ابزار دقیق
-                        </h2>
-                        <p className="text-[11px] text-slate-300 mt-1 leading-relaxed">
-                          سیستم فروش یکپارچه سرور-محور قدرت گرفته از Django 5.2
+                      {/* Hero Banner with SORNA Logo */}
+                      <div className="bg-gradient-to-br from-[#001F54] via-blue-950 to-slate-900 rounded-2xl p-4 border border-amber-500/30 shadow-md">
+                        <div className="flex items-center gap-3">
+                          <img
+                            src="/assets/aistudio/favicon_6999939e.png"
+                            alt="گروه آموزشی سورنا"
+                            className="w-12 h-12 rounded-xl bg-white p-1 object-contain shrink-0 shadow"
+                          />
+                          <div>
+                            <span className="text-[10px] uppercase tracking-wider text-amber-300 font-bold bg-amber-500/15 border border-amber-400/30 px-2 py-0.5 rounded">
+                              sornac.ir
+                            </span>
+                            <h2 className="text-sm font-extrabold text-white mt-1">
+                              گروه آموزشی سورنا (SORNA)
+                            </h2>
+                          </div>
+                        </div>
+                        <p className="text-[11px] text-slate-300 mt-2.5 leading-relaxed">
+                          سامانه جامع دوره‌های آموزشی، آزمون‌ها و خدمات هوشمند آموزشی در بستر Android WebView
                         </p>
                         <div className="mt-3 flex gap-2">
                           <button
-                            onClick={() => navigateTo('https://amvajsarmad.com/products', 'products')}
-                            className="bg-sky-500 hover:bg-sky-400 text-white text-xs px-3 py-1.5 rounded-lg font-medium"
+                            onClick={() => navigateTo('https://sornac.ir/courses', 'products')}
+                            className="bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs px-3 py-1.5 rounded-lg font-bold"
                           >
-                            مشاهده کاتالوگ
+                            مشاهده دوره‌ها
                           </button>
                           <button
-                            onClick={() => navigateTo('https://amvajsarmad.com/cart', 'cart')}
+                            onClick={() => navigateTo('https://sornac.ir/cart', 'cart')}
                             className="bg-slate-800/80 hover:bg-slate-800 text-slate-200 text-xs px-3 py-1.5 rounded-lg font-medium border border-slate-700"
                           >
-                            سبد خرید ({cartCount})
+                            سبد ثبت‌نام ({cartCount})
                           </button>
                         </div>
                       </div>
@@ -239,51 +250,51 @@ export const AndroidEmulator: React.FC = () => {
                       {/* Featured Categories */}
                       <div>
                         <div className="flex items-center justify-between text-xs font-semibold mb-2">
-                          <span>دسته‌بندی‌های اصلی</span>
-                          <span className="text-sky-400 text-[11px]">مشاهده همه</span>
+                          <span>بخش‌های آموزشی سورنا</span>
+                          <span className="text-amber-400 text-[11px]">مشاهده همه</span>
                         </div>
                         <div className="grid grid-cols-2 gap-2 text-xs">
                           <div
-                            onClick={() => navigateTo('https://amvajsarmad.com/products?cat=rf', 'products')}
+                            onClick={() => navigateTo('https://sornac.ir/courses?cat=specialized', 'products')}
                             className="p-2.5 bg-slate-800/70 hover:bg-slate-800 rounded-xl border border-slate-700/60 cursor-pointer"
                           >
-                            <span className="text-sky-400 font-bold text-sm">📡</span>
-                            <div className="font-semibold mt-1">تجهیزات RF و فرکانسی</div>
-                            <div className="text-[10px] text-slate-400">آنتن و ماژول فرستنده</div>
+                            <span className="text-amber-400 font-bold text-sm">📚</span>
+                            <div className="font-semibold mt-1">دوره‌های تخصصی</div>
+                            <div className="text-[10px] text-slate-400">آموزش گام‌به‌گام و جامع</div>
                           </div>
                           <div
-                            onClick={() => navigateTo('https://amvajsarmad.com/products?cat=cables', 'products')}
+                            onClick={() => navigateTo('https://sornac.ir/courses?cat=exams', 'products')}
                             className="p-2.5 bg-slate-800/70 hover:bg-slate-800 rounded-xl border border-slate-700/60 cursor-pointer"
                           >
-                            <span className="text-emerald-400 font-bold text-sm">🔌</span>
-                            <div className="font-semibold mt-1">کابل و کانکتورها</div>
-                            <div className="text-[10px] text-slate-400">کواکسیال و فیبر نوری</div>
+                            <span className="text-emerald-400 font-bold text-sm">📝</span>
+                            <div className="font-semibold mt-1">آزمون و سنجش</div>
+                            <div className="text-[10px] text-slate-400">کارنامه و تحلیل هوشمند</div>
                           </div>
                           <div
-                            onClick={() => navigateTo('https://amvajsarmad.com/products?cat=power', 'products')}
+                            onClick={() => navigateTo('https://sornac.ir/courses?cat=workshops', 'products')}
                             className="p-2.5 bg-slate-800/70 hover:bg-slate-800 rounded-xl border border-slate-700/60 cursor-pointer"
                           >
-                            <span className="text-amber-400 font-bold text-sm">⚡</span>
-                            <div className="font-semibold mt-1">منابع تغذیه دقیق</div>
-                            <div className="text-[10px] text-slate-400">تثبیت‌شده صنعتی</div>
+                            <span className="text-sky-400 font-bold text-sm">💡</span>
+                            <div className="font-semibold mt-1">کارگاه‌های مهارتی</div>
+                            <div className="text-[10px] text-slate-400">پروژه‌محور و کاربردی</div>
                           </div>
                           <div
-                            onClick={() => navigateTo('https://amvajsarmad.com/products?cat=measuring', 'products')}
+                            onClick={() => navigateTo('https://sornac.ir/courses?cat=consulting', 'products')}
                             className="p-2.5 bg-slate-800/70 hover:bg-slate-800 rounded-xl border border-slate-700/60 cursor-pointer"
                           >
-                            <span className="text-purple-400 font-bold text-sm">🔬</span>
-                            <div className="font-semibold mt-1">ابزار سنجش و تست</div>
-                            <div className="text-[10px] text-slate-400">اسیلوسکوپ و آنالایزر</div>
+                            <span className="text-purple-400 font-bold text-sm">🎓</span>
+                            <div className="font-semibold mt-1">مشاوره و برنامه‌ریزی</div>
+                            <div className="text-[10px] text-slate-400">پشتیبانی اختصاصی سورنا</div>
                           </div>
                         </div>
                       </div>
 
-                      {/* Django Session Status Card */}
+                      {/* Session Status Card */}
                       <div className="bg-slate-800/50 rounded-xl p-3 border border-slate-700/50 text-[11px] space-y-1.5">
                         <div className="flex items-center justify-between text-slate-300">
                           <span className="font-semibold flex items-center gap-1.5">
                             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                            وضعیت نشست Django:
+                            وضعیت نشست کاربری sornac.ir:
                           </span>
                           <span className="text-emerald-400 font-mono text-[10px]">فعال (Active)</span>
                         </div>
@@ -294,35 +305,35 @@ export const AndroidEmulator: React.FC = () => {
                     </div>
                   )}
 
-                  {/* Page: PRODUCTS */}
+                  {/* Page: COURSES / PRODUCTS */}
                   {activePage === 'products' && (
                     <div className="p-4 space-y-3">
                       <div className="flex items-center justify-between text-xs font-bold border-b border-slate-800 pb-2">
-                        <span>فهرست محصولات امواج سرمد</span>
-                        <span className="text-sky-400 text-[11px]">۴ مورد</span>
+                        <span>فهرست دوره‌های گروه آموزشی سورنا</span>
+                        <span className="text-amber-400 text-[11px]">۴ دوره</span>
                       </div>
 
                       <div className="space-y-2">
                         {[
-                          { id: 1, title: 'ماژول تقویت‌کننده فرکانس رادیویی LNA 2.4GHz', price: '۳,۲۵۰,۰۰۰ تومان', code: 'AS-LNA24' },
-                          { id: 2, title: 'کابل کواکسیال ابزار دقیق فیدرتست RG-316', price: '۸۵۰,۰۰۰ تومان', code: 'AS-CBL316' },
-                          { id: 3, title: 'منبع تغذیه متغیر سوئیچینگ ۳۰ ولت ۵ آمپر', price: '۶,۴۰۰,۰۰۰ تومان', code: 'AS-PWR305' },
-                          { id: 4, title: 'آنتن کالیبره هلیکال باند UHF صنعتی', price: '۴,۱۰۰,۰۰۰ تومان', code: 'AS-ANT433' },
+                          { id: 1, title: 'دوره جامع آمادگی آزمون و مهارت‌های تخصصی سورنا', price: '۱,۸۵۰,۰۰۰ تومان', code: 'SRN-101' },
+                          { id: 2, title: 'کارگاه عملی حل مسئله و تکنیک‌های تست‌زنی پیشرفته', price: '۹۵۰,۰۰۰ تومان', code: 'SRN-204' },
+                          { id: 3, title: 'بسته آموزشی جامع به همراه جزوات و آزمون آزمایشی', price: '۲,۴۰۰,۰۰۰ تومان', code: 'SRN-310' },
+                          { id: 4, title: 'جلسات مشاوره و هدایت تحصیلی اختصاصی سورنا', price: '۷۸۰,۰۰۰ تومان', code: 'SRN-405' },
                         ].map((prod) => (
-                          <div key={prod.id} className="p-3 bg-slate-800/80 rounded-xl border border-slate-700/60 flex items-center justify-between">
+                          <div key={prod.id} className="p-3 bg-slate-800/80 rounded-xl border border-slate-700/60 flex items-center justify-between gap-2">
                             <div>
                               <div className="text-xs font-semibold text-white">{prod.title}</div>
                               <div className="text-[10px] text-slate-400 font-mono mt-0.5">{prod.code}</div>
-                              <div className="text-[11px] text-sky-400 font-bold mt-1">{prod.price}</div>
+                              <div className="text-[11px] text-amber-400 font-bold mt-1">{prod.price}</div>
                             </div>
                             <button
                               onClick={() => {
                                 setCartCount(c => c + 1);
-                                navigateTo('https://amvajsarmad.com/cart', 'cart');
+                                navigateTo('https://sornac.ir/cart', 'cart');
                               }}
-                              className="text-[11px] bg-sky-600 hover:bg-sky-500 text-white px-2.5 py-1.5 rounded-lg shrink-0 font-medium"
+                              className="text-[11px] bg-amber-500 hover:bg-amber-400 text-slate-950 px-2.5 py-1.5 rounded-lg shrink-0 font-bold"
                             >
-                              افزودن به سبد
+                              ثبت‌نام دوره
                             </button>
                           </div>
                         ))}
@@ -334,36 +345,36 @@ export const AndroidEmulator: React.FC = () => {
                   {activePage === 'cart' && (
                     <div className="p-4 space-y-4">
                       <div className="flex items-center justify-between text-xs font-bold border-b border-slate-800 pb-2">
-                        <span>سبد خرید شما</span>
-                        <span className="text-sky-400 text-[11px]">{cartCount} آیتم</span>
+                        <span>سبد ثبت‌نام شما در سورنا</span>
+                        <span className="text-amber-400 text-[11px]">{cartCount} دوره</span>
                       </div>
 
                       <div className="space-y-2 text-xs">
                         <div className="p-3 bg-slate-800/80 rounded-xl border border-slate-700/60 flex justify-between items-center">
                           <div>
-                            <div className="font-semibold text-white">ماژول تقویت‌کننده LNA</div>
-                            <div className="text-[10px] text-slate-400">تعداد: ۱ عدد</div>
+                            <div className="font-semibold text-white">دوره جامع مهارت‌های تخصصی سورنا</div>
+                            <div className="text-[10px] text-slate-400">دسترسی کامل آنلاین + جزوه</div>
                           </div>
-                          <span className="text-sky-400 font-bold">۳,۲۵۰,۰۰۰ تومان</span>
+                          <span className="text-amber-400 font-bold">۱,۸۵۰,۰۰۰ تومان</span>
                         </div>
                         <div className="p-3 bg-slate-800/80 rounded-xl border border-slate-700/60 flex justify-between items-center">
                           <div>
-                            <div className="font-semibold text-white">کابل کواکسیال RG-316</div>
-                            <div className="text-[10px] text-slate-400">تعداد: ۱ عدد</div>
+                            <div className="font-semibold text-white">کارگاه تکنیک‌های پیشرفته</div>
+                            <div className="text-[10px] text-slate-400">ظرفیت ویژه</div>
                           </div>
-                          <span className="text-sky-400 font-bold">۸۵۰,۰۰۰ تومان</span>
+                          <span className="text-amber-400 font-bold">۹۵۰,۰۰۰ تومان</span>
                         </div>
                       </div>
 
                       {/* Total */}
                       <div className="bg-slate-800/50 p-3 rounded-xl border border-slate-700/40 text-xs space-y-2">
                         <div className="flex justify-between text-slate-300">
-                          <span>مبلغ کل سفارش:</span>
-                          <span className="font-bold text-white">۴,۱۰۰,۰۰۰ تومان</span>
+                          <span>مبلغ کل ثبت‌نام:</span>
+                          <span className="font-bold text-white">۲,۸۰۰,۰۰۰ تومان</span>
                         </div>
                         <div className="flex justify-between text-slate-300">
-                          <span>حمل و نقل:</span>
-                          <span className="text-emerald-400">رایگان</span>
+                          <span>فعال‌سازی پنل کاربری:</span>
+                          <span className="text-emerald-400">آنی پس از پرداخت</span>
                         </div>
                       </div>
 
@@ -377,7 +388,7 @@ export const AndroidEmulator: React.FC = () => {
                       </button>
 
                       <p className="text-[10px] text-slate-400 text-center leading-normal">
-                        درگاه پرداخت داخل وب‌ویو لود شده و پس از تکمیل، به امواج سرمد بازمی‌گردد.
+                        درگاه پرداخت داخل وب‌ویو لود شده و پس از تکمیل، به سایت گروه آموزشی سورنا (sornac.ir) بازمی‌گردد.
                       </p>
                     </div>
                   )}
@@ -388,7 +399,7 @@ export const AndroidEmulator: React.FC = () => {
                       <div className="bg-amber-500/10 border border-amber-500/20 p-3 rounded-xl text-center">
                         <div className="text-amber-400 text-xs font-bold flex items-center justify-center gap-1.5 mb-1">
                           <CreditCard className="w-4 h-4" />
-                          <span>درگاه پرداخت اینترنتی شاپرک (بانک ملت)</span>
+                          <span>درگاه پرداخت اینترنتی شاپرک</span>
                         </div>
                         <p className="text-[10px] text-slate-300 font-mono">
                           bpm.shaparak.ir
@@ -398,23 +409,23 @@ export const AndroidEmulator: React.FC = () => {
                       <div className="bg-slate-900 p-3 rounded-xl border border-slate-800 text-xs space-y-2">
                         <div className="flex justify-between text-slate-400">
                           <span>پذیرنده:</span>
-                          <span className="text-slate-200 font-bold">فروشگاه امواج سرمد</span>
+                          <span className="text-slate-200 font-bold">گروه آموزشی سورنا (sornac.ir)</span>
                         </div>
                         <div className="flex justify-between text-slate-400">
                           <span>مبلغ قابل پرداخت:</span>
-                          <span className="text-emerald-400 font-bold">۴,۱۰۰,۰۰۰ تومان</span>
+                          <span className="text-emerald-400 font-bold">۲,۸۰۰,۰۰۰ تومان</span>
                         </div>
                         <div className="flex justify-between text-slate-400">
                           <span>شماره ترمینال:</span>
-                          <span className="font-mono text-slate-200">92817462</span>
+                          <span className="font-mono text-slate-200">94827165</span>
                         </div>
                       </div>
 
                       <div className="space-y-2">
                         <button
                           onClick={() => {
-                            alert('پرداخت موفق بود! بازگشت به وب‌سایت امواج سرمد.');
-                            navigateTo('https://amvajsarmad.com/payment/verify/?status=OK&track_id=8923412', 'home');
+                            showNotice('پرداخت موفق بود! بازگشت خودکار به پنل کاربری گروه آموزشی سورنا.');
+                            navigateTo('https://sornac.ir/payment/verify/?status=OK&track_id=9812450', 'home');
                           }}
                           className="w-full bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold py-2.5 rounded-xl flex items-center justify-center gap-2"
                         >
@@ -424,8 +435,8 @@ export const AndroidEmulator: React.FC = () => {
 
                         <button
                           onClick={() => {
-                            alert('پرداخت لغو شد. بازگشت به سبد خرید.');
-                            navigateTo('https://amvajsarmad.com/cart', 'cart');
+                            showNotice('پرداخت لغو شد. بازگشت به سبد ثبت‌نام.');
+                            navigateTo('https://sornac.ir/cart', 'cart');
                           }}
                           className="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs py-2 rounded-xl"
                         >
@@ -439,20 +450,22 @@ export const AndroidEmulator: React.FC = () => {
                   {activePage === 'login' && (
                     <div className="p-4 space-y-4">
                       <div className="text-center">
-                        <div className="w-12 h-12 bg-sky-500/10 text-sky-400 rounded-full flex items-center justify-center mx-auto mb-2 border border-sky-500/20">
-                          <User className="w-6 h-6" />
-                        </div>
-                        <h3 className="text-sm font-bold text-white">ورود به حساب کاربری</h3>
-                        <p className="text-[11px] text-slate-400">سامانه احراز هویت جنگو (Django Auth)</p>
+                        <img
+                          src="/assets/aistudio/favicon_6999939e.png"
+                          alt="لوگوی گروه آموزشی سورنا"
+                          className="w-14 h-14 rounded-2xl bg-white p-1.5 object-contain mx-auto mb-2 shadow"
+                        />
+                        <h3 className="text-sm font-bold text-white">ورود به پنل کاربری سورنا</h3>
+                        <p className="text-[11px] text-slate-400">حفظ پایدار کوکی‌های نشست در اپلیکیشن اندروید</p>
                       </div>
 
                       <div className="space-y-2.5 text-xs">
                         <div>
-                          <label className="block text-slate-400 mb-1 text-[11px]">شماره موبایل یا ایمیل:</label>
+                          <label className="block text-slate-400 mb-1 text-[11px]">شماره موبایل یا کد ملی:</label>
                           <input
                             type="text"
                             defaultValue="09120000000"
-                            className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white font-mono text-xs focus:outline-none focus:border-sky-500"
+                            className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white font-mono text-xs focus:outline-none focus:border-amber-400"
                           />
                         </div>
                         <div>
@@ -460,19 +473,18 @@ export const AndroidEmulator: React.FC = () => {
                           <input
                             type="password"
                             defaultValue="••••••••"
-                            className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white font-mono text-xs focus:outline-none focus:border-sky-500"
+                            className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white font-mono text-xs focus:outline-none focus:border-amber-400"
                           />
                         </div>
 
                         <button
                           onClick={() => {
-                            setIsLoggedIn(true);
-                            alert('ورود با موفقیت انجام شد! کوکی sessionid در CookieManager ذخیره شد.');
-                            navigateTo('https://amvajsarmad.com', 'home');
+                            showNotice('ورود با موفقیت انجام شد! کوکی نشست در حافظه دائمی اندروید ذخیره گردید.');
+                            navigateTo('https://sornac.ir/', 'home');
                           }}
-                          className="w-full bg-sky-500 hover:bg-sky-400 text-white font-bold py-2 rounded-lg text-xs transition-colors mt-2"
+                          className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2 rounded-lg text-xs transition-colors mt-2"
                         >
-                          ورود امن به سامانه
+                          ورود به سامانه سورنا
                         </button>
                       </div>
                     </div>
@@ -491,14 +503,14 @@ export const AndroidEmulator: React.FC = () => {
                 <div className="w-0 h-0 border-y-4 border-y-transparent border-r-8 border-r-slate-400"></div>
               </button>
               <button
-                onClick={() => navigateTo('https://amvajsarmad.com', 'home')}
+                onClick={() => navigateTo('https://sornac.ir/', 'home')}
                 className="p-2 hover:text-white transition-colors"
                 title="صفحه اصلی (Home)"
               >
                 <div className="w-3.5 h-3.5 rounded-full border-2 border-slate-400"></div>
               </button>
               <button
-                onClick={() => alert('برنامه‌های فعال اندروید: امواج سرمد (کامیونیتی Tauri 2)')}
+                onClick={() => showNotice('برنامه فعال اندروید: گروه آموزشی سورنا (ir.sornac.app)')}
                 className="p-2 hover:text-white transition-colors"
                 title="برنامه‌های اخیر (Recents)"
               >
@@ -511,16 +523,38 @@ export const AndroidEmulator: React.FC = () => {
 
       {/* Right Column: Emulator Controls & Security / Cookie Diagnostics */}
       <div className="lg:col-span-7 space-y-5">
+        {/* Brand Identity & Logo Verification Card */}
+        <div className="bg-slate-900 rounded-2xl p-5 border border-amber-500/30 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3.5">
+            <img
+              src="/assets/aistudio/favicon_6999939e.png"
+              alt="لوگوی گروه آموزشی سورنا"
+              className="w-16 h-16 rounded-2xl bg-white p-1.5 object-contain border border-amber-400/40 shadow-md shrink-0"
+            />
+            <div>
+              <span className="text-[11px] font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30 px-2.5 py-0.5 rounded-full">
+                مشخصات جدید اپلیکیشن اعمال شد
+              </span>
+              <h2 className="text-base sm:text-lg font-extrabold text-white mt-1.5">
+                گروه آموزشی سورنا • <span className="font-mono text-amber-400 text-sm">https://sornac.ir/</span>
+              </h2>
+              <p className="text-xs text-slate-400 mt-0.5">
+                شناسه پکیج اندروید: <code className="font-mono text-sky-300">ir.sornac.app</code> • آیکون رسمی سورنا (PNG Adaptive Icon) در بیلد گیت‌هاب تعبیه شد
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Quick Simulator Control Header */}
         <div className="bg-slate-900 rounded-2xl p-5 border border-slate-800 shadow-sm space-y-4">
           <div className="flex items-center justify-between border-b border-slate-800 pb-3">
             <div>
-              <h2 className="text-base font-bold text-white flex items-center gap-2">
-                <Smartphone className="w-5 h-5 text-sky-400" />
-                <span>پنل آزمایش و شبیه‌سازی وب‌ویو اندروید</span>
-              </h2>
+              <h3 className="text-base font-bold text-white flex items-center gap-2">
+                <Smartphone className="w-5 h-5 text-amber-400" />
+                <span>پنل آزمایش و شبیه‌سازی وب‌ویو اندروید سورنا</span>
+              </h3>
               <p className="text-xs text-slate-400 mt-0.5">
-                تست سناریوهای واقعی: قطع شبکه، درگاه‌های شاپرک، حفظ سشن جنگو و اینتنت‌ها
+                تست سناریوهای واقعی: قطع شبکه، درگاه‌های شاپرک، حفظ کوکی‌های لاگین و اینتنت‌ها
               </p>
             </div>
 
@@ -545,34 +579,34 @@ export const AndroidEmulator: React.FC = () => {
             </label>
             <div className="flex flex-wrap gap-2 text-xs">
               <button
-                onClick={() => navigateTo('https://amvajsarmad.com', 'home')}
+                onClick={() => navigateTo('https://sornac.ir/', 'home')}
                 className={`px-3 py-1.5 rounded-lg border font-medium transition-colors ${
                   activePage === 'home'
-                    ? 'bg-sky-500 text-white border-sky-400'
+                    ? 'bg-amber-500 text-slate-950 border-amber-400 font-bold'
                     : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'
                 }`}
               >
-                صفحه اصلی
+                صفحه اصلی سورنا
               </button>
               <button
-                onClick={() => navigateTo('https://amvajsarmad.com/products', 'products')}
+                onClick={() => navigateTo('https://sornac.ir/courses', 'products')}
                 className={`px-3 py-1.5 rounded-lg border font-medium transition-colors ${
                   activePage === 'products'
-                    ? 'bg-sky-500 text-white border-sky-400'
+                    ? 'bg-amber-500 text-slate-950 border-amber-400 font-bold'
                     : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'
                 }`}
               >
-                کاتالوگ محصولات
+                فهرست دوره‌های آموزشی
               </button>
               <button
-                onClick={() => navigateTo('https://amvajsarmad.com/cart', 'cart')}
+                onClick={() => navigateTo('https://sornac.ir/cart', 'cart')}
                 className={`px-3 py-1.5 rounded-lg border font-medium transition-colors ${
                   activePage === 'cart'
-                    ? 'bg-sky-500 text-white border-sky-400'
+                    ? 'bg-amber-500 text-slate-950 border-amber-400 font-bold'
                     : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'
                 }`}
               >
-                سبد خرید ({cartCount})
+                سبد ثبت‌نام ({cartCount})
               </button>
               <button
                 onClick={() => navigateTo('https://bpm.shaparak.ir/pay', 'payment')}
@@ -585,14 +619,14 @@ export const AndroidEmulator: React.FC = () => {
                 تست درگاه پرداخت شاپرک
               </button>
               <button
-                onClick={() => navigateTo('https://amvajsarmad.com/account/login', 'login')}
+                onClick={() => navigateTo('https://sornac.ir/account/login', 'login')}
                 className={`px-3 py-1.5 rounded-lg border font-medium transition-colors ${
                   activePage === 'login'
-                    ? 'bg-sky-500 text-white border-sky-400'
+                    ? 'bg-amber-500 text-slate-950 border-amber-400 font-bold'
                     : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'
                 }`}
               >
-                ورود سشن جنگو
+                ورود به پنل کاربری
               </button>
             </div>
           </div>
@@ -602,14 +636,14 @@ export const AndroidEmulator: React.FC = () => {
         <div className="bg-slate-900 rounded-2xl p-5 border border-slate-800 shadow-sm space-y-4">
           <div className="flex items-center justify-between border-b border-slate-800 pb-2">
             <h3 className="text-sm font-bold text-white flex items-center gap-2">
-              <ShieldAlert className="w-4 h-4 text-sky-400" />
-              <span>موتور هوشمند ناوبری و فیلتر آدرس‌ها (Navigation Engine)</span>
+              <ShieldAlert className="w-4 h-4 text-amber-400" />
+              <span>موتور هوشمند ناوبری و فیلتر آدرس‌ها (sornac.ir)</span>
             </h3>
             <span className="text-[11px] font-mono text-slate-400">MainActivity.kt / Rust</span>
           </div>
 
           <p className="text-xs text-slate-400 leading-relaxed">
-            بر اساس نیازمندی‌ها، آدرس‌های داخلی در اپ باز می‌مانند، درگاه‌های شاپرک در همان سشن اجرا می‌شوند و سایت‌های خارجی به مرورگر هدایت می‌شوند:
+            آدرس‌های دامنه <code className="font-mono text-amber-300">sornac.ir</code> و زیرشاخه‌های آن داخل اپلیکیشن باز می‌مانند، درگاه‌های بانکی شاپرک در همان سشن اجرا می‌شوند و لینک‌های خارجی به مرورگر هدایت می‌شوند:
           </p>
 
           <div className="space-y-2 text-xs">
@@ -619,7 +653,8 @@ export const AndroidEmulator: React.FC = () => {
                 value={testUrlInput}
                 onChange={(e) => handleTestUrlCheck(e.target.value)}
                 placeholder="آدرس اینترنتی را وارد کنید..."
-                className="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 font-mono text-xs focus:outline-none focus:border-sky-500"
+                className="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 font-mono text-xs focus:outline-none focus:border-amber-400"
+                dir="ltr"
               />
             </div>
 
@@ -628,7 +663,7 @@ export const AndroidEmulator: React.FC = () => {
               <div>
                 <div className="text-[11px] text-slate-400">طبقه‌بندی مسیر:</div>
                 <div className="font-bold text-white flex items-center gap-1.5 mt-0.5">
-                  <span className="font-mono text-sky-400">{lastRouteResult.type}</span>
+                  <span className="font-mono text-amber-400">{lastRouteResult.type}</span>
                   <span className="text-slate-400">•</span>
                   <span className="text-slate-200">{lastRouteResult.reason}</span>
                 </div>
@@ -650,13 +685,13 @@ export const AndroidEmulator: React.FC = () => {
             </div>
 
             {/* Quick Test Presets */}
-            <div className="flex flex-wrap gap-1.5 pt-1">
+            <div className="flex flex-wrap gap-1.5 pt-1" dir="ltr">
               {[
-                'https://amvajsarmad.com/products',
+                'https://sornac.ir/courses',
                 'https://bpm.shaparak.ir/pay',
-                'https://amvajsarmad.com/payment/verify/?status=OK',
+                'https://sornac.ir/payment/verify/?status=OK',
                 'tel:02188888888',
-                'https://instagram.com/amvajsarmad',
+                'https://instagram.com/sornac.ir',
               ].map((example) => (
                 <button
                   key={example}
@@ -670,12 +705,12 @@ export const AndroidEmulator: React.FC = () => {
           </div>
         </div>
 
-        {/* Django Cookies & Session Inspector */}
+        {/* Cookies & Session Inspector */}
         <div className="bg-slate-900 rounded-2xl p-5 border border-slate-800 shadow-sm space-y-3">
           <div className="flex items-center justify-between border-b border-slate-800 pb-2">
             <h3 className="text-sm font-bold text-white flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-              <span>پایش دائمی کوکی‌های Django و شبکه توزیع ابرآروان</span>
+              <span>پایش دائمی کوکی‌های نشست sornac.ir</span>
             </h3>
             <span className="text-[11px] text-emerald-400 font-mono bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
               CookieManager.flush()
@@ -683,24 +718,24 @@ export const AndroidEmulator: React.FC = () => {
           </div>
 
           <p className="text-xs text-slate-400 leading-relaxed">
-            در این اپلیکیشن کوکی‌های احراز هویت جنگو و محافظتی ابرآروان پس از بستن و باز کردن مجدد برنامه کاملاً پایدار باقی می‌مانند:
+            در اپلیکیشن گروه آموزشی سورنا کوکی‌های احراز هویت و نشست کاربری پس از بستن و باز کردن مجدد برنامه کاملاً پایدار باقی می‌مانند:
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs font-mono">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs font-mono" dir="ltr">
             <div className="bg-slate-950 p-2.5 rounded-xl border border-slate-800">
-              <span className="text-sky-400 text-[10px] block">sessionid</span>
+              <span className="text-amber-400 text-[10px] block">sessionid</span>
               <span className="text-slate-200 truncate block mt-0.5">{sessionCookies.sessionid}</span>
               <span className="text-[9px] text-emerald-400">HttpOnly, Secure</span>
             </div>
             <div className="bg-slate-950 p-2.5 rounded-xl border border-slate-800">
-              <span className="text-sky-400 text-[10px] block">csrftoken</span>
+              <span className="text-amber-400 text-[10px] block">csrftoken</span>
               <span className="text-slate-200 truncate block mt-0.5">{sessionCookies.csrftoken}</span>
               <span className="text-[9px] text-emerald-400">SameSite=Lax</span>
             </div>
             <div className="bg-slate-950 p-2.5 rounded-xl border border-slate-800">
-              <span className="text-sky-400 text-[10px] block">__arcsco (Arvan)</span>
+              <span className="text-amber-400 text-[10px] block">__arcsco (CDN)</span>
               <span className="text-slate-200 truncate block mt-0.5">{sessionCookies.arvan_arcsco}</span>
-              <span className="text-[9px] text-emerald-400">CDN Challenge OK</span>
+              <span className="text-[9px] text-emerald-400">Persistent Cookie</span>
             </div>
           </div>
         </div>

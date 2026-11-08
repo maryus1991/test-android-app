@@ -2,5 +2,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-    amvaj_sarmad_lib::run();
+    sorna_lib::run();
 }

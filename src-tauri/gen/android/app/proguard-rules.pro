@@ -1,11 +1,9 @@
-# Proguard rules for Amvaj Sarmad Android App
-# Preserve WebView JavaScript interfaces and native bindings
+# Proguard rules for Sorna Educational Group Android App
 -keepclassmembers class * {
     @android.webkit.JavascriptInterface <methods>;
 }
 
--keep class com.amvajsarmad.app.** { *; }
--dontwarn com.amvajsarmad.app.**
+-keep class ir.sornac.app.** { *; }
+-dontwarn ir.sornac.app.**
 
-# Preserve WebKit callbacks
 -keep public class android.webkit.** { *; }

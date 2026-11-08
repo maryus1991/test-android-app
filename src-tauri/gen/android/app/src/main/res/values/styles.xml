@@ -1,6 +1,5 @@
 <resources>
-    <!-- Base Application Theme -->
-    <style name="Theme.AmvajSarmad" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.Sorna" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryVariant">@color/primary_dark</item>
         <item name="colorOnPrimary">@color/surface</item>
@@ -8,12 +7,5 @@
         <item name="android:statusBarColor">@color/status_bar_color</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:navigationBarColor">@color/background_dark</item>
-    </style>
-
-    <!-- Splash Screen Theme -->
-    <style name="Theme.AmvajSarmad.Splash" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="android:windowBackground">@color/primary_dark</item>
-        <item name="android:statusBarColor">@color/primary_dark</item>
-        <item name="android:navigationBarColor">@color/primary_dark</item>
     </style>
 </resources>

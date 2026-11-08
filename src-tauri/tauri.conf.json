@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "Amvaj Sarmad",
+  "productName": "گروه آموزشی سورنا",
   "version": "1.0.0",
-  "identifier": "com.amvajsarmad.app",
+  "identifier": "ir.sornac.app",
   "build": {
     "beforeDevCommand": "",
     "beforeBuildCommand": "",
@@ -15,9 +15,9 @@
     },
     "windows": [
       {
-        "title": "Amvaj Sarmad",
-        "url": "https://amvajsarmad.com",
-        "userAgent": "Mozilla/5.0 (Linux; Android 14; Mobile; AmvajSarmadApp/1.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36",
+        "title": "گروه آموزشی سورنا",
+        "url": "https://sornac.ir/",
+        "userAgent": "Mozilla/5.0 (Linux; Android 14; Mobile; SornaApp/1.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36",
         "fullscreen": false,
         "resizable": true,
         "transparent": false,

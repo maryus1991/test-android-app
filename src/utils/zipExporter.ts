@@ -1,5 +1,5 @@
 import JSZip from 'jszip';
-import { PROJECT_FILES } from '../data/projectFiles';
+import { PROJECT_FILES, SORNA_LOGO_BASE64 } from '../data/projectFiles';
 
 export async function generateAndDownloadProjectZip(): Promise<void> {
   const zip = new JSZip();
@@ -9,43 +9,44 @@ export async function generateAndDownloadProjectZip(): Promise<void> {
     zip.file(file.path, file.content);
   }
 
+  // Add binary PNG logo for Sorna Educational Group Android App Icon
+  zip.file(
+    'src-tauri/gen/android/app/src/main/res/drawable-nodpi/ic_launcher_logo.png',
+    SORNA_LOGO_BASE64,
+    { base64: true }
+  );
+
   // Add gradle wrapper properties
   zip.file(
-    "src-tauri/gen/android/gradle/wrapper/gradle-wrapper.properties",
+    'src-tauri/gen/android/gradle/wrapper/gradle-wrapper.properties',
     `distributionBase=GRADLE_USER_HOME\ndistributionPath=wrapper/dists\ndistributionUrl=https\\://services.gradle.org/distributions/gradle-8.5-bin.zip\nnetworkTimeout=10000\nvalidateDistributionUrl=true\nzipStoreBase=GRADLE_USER_HOME\nzipStorePath=wrapper/dists\n`
   );
 
-  // Add root package.json for building web dist
+  // Add root package.json
   const rootPackageJson = {
-    name: "amvaj-sarmad-mobile",
-    version: "1.0.0",
+    name: 'sorna-educational-group-mobile',
+    version: '1.0.0',
     private: true,
     scripts: {
-      "build": "echo 'Building web assets for Tauri 2...' && mkdir -p dist && echo '<html><body><h1>Amvaj Sarmad Mobile Gateway</h1></body></html>' > dist/index.html"
-    }
+      build:
+        "echo 'Building web assets for Sorna...' && mkdir -p dist && echo '<html><body><h1>Sorna Educational Group</h1></body></html>' > dist/index.html",
+    },
   };
-  zip.file("package.json", JSON.stringify(rootPackageJson, null, 2));
+  zip.file('package.json', JSON.stringify(rootPackageJson, null, 2));
 
   // Add README in Persian and English
-  zip.file("README.md", `# Amvaj Sarmad Android Mobile Project (Tauri 2 + WebView)
-Target Website: https://amvajsarmad.com
-Package Identifier: com.amvajsarmad.app
+  zip.file(
+    'README.md',
+    `# پروژه اندروید گروه آموزشی سورنا (Sorna Educational Group)
+Website: https://sornac.ir/
+Package Identifier: ir.sornac.app
 
-## How to Build the APK:
-
-### Option 1 (Recommended): GitHub Actions (100% Free Cloud Build)
-1. Push this folder to a GitHub repository.
-2. Go to Actions -> 'Build Amvaj Sarmad Android APK'.
-3. Download the ready 'app-debug.apk' from Artifacts!
-
-### Option 2: Local Gradle Build
-\`\`\`bash
-cd src-tauri/gen/android
-./gradlew assembleDebug
-\`\`\`
-The APK will be generated at:
-src-tauri/gen/android/app/build/outputs/apk/debug/app-debug.apk
-`);
+## ساخت خودکار خروجی APK در گیت‌هاب (GitHub Actions):
+1. فایل \`.github/workflows/build-apk.yml\` را در مخزن گیت‌هاب خود قرار دهید.
+2. به تب Actions بروید.
+3. از بخش Artifacts در پایین صفحه Summary، فایل‌های \`sorna-debug-apk\` و \`sorna-release-apk\` را دانلود کنید!
+`
+  );
 
   // Generate ZIP blob
   const content = await zip.generateAsync({ type: 'blob' });
@@ -54,7 +55,7 @@ src-tauri/gen/android/app/build/outputs/apk/debug/app-debug.apk
   const downloadUrl = URL.createObjectURL(content);
   const link = document.createElement('a');
   link.href = downloadUrl;
-  link.download = 'amvaj-sarmad-android-tauri2-project.zip';
+  link.download = 'sorna-android-tauri2-project.zip';
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);

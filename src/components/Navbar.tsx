@@ -1,5 +1,5 @@
 import React from 'react';
-import { Smartphone, Download, Layers, ShieldCheck, Terminal, BookOpen, ExternalLink } from 'lucide-react';
+import { Smartphone, Download, Layers, Terminal, BookOpen, ExternalLink } from 'lucide-react';
 
 interface NavbarProps {
   activeTab: 'emulator' | 'apk' | 'code' | 'architecture';
@@ -20,20 +20,22 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="flex items-center justify-between h-16">
           {/* Brand & Identity */}
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-600 to-cyan-400 flex items-center justify-center shadow-lg shadow-sky-500/20 text-white font-bold text-lg">
-              ام
-            </div>
+            <img
+              src="/assets/aistudio/favicon_6999939e.png"
+              alt="گروه آموزشی سورنا"
+              className="w-10 h-10 rounded-xl bg-white p-0.5 object-contain shadow-lg shadow-amber-500/10 border border-amber-400/30"
+            />
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-extrabold text-base sm:text-lg tracking-tight text-white">
-                  امواج سرمد
+                  گروه آموزشی سورنا
                 </span>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20 font-mono">
-                  Tauri 2 + Android
+                <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono">
+                  SORNA • Android
                 </span>
               </div>
               <p className="text-xs text-slate-400 hidden sm:block">
-                اپلیکیشن بومی اندروید وب‌سایت amvajsarmad.com
+                اپلیکیشن بومی اندروید وب‌سایت sornac.ir
               </p>
             </div>
           </div>
@@ -44,7 +46,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={() => setActiveTab('emulator')}
               className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors shrink-0 ${
                 activeTab === 'emulator'
-                  ? 'bg-sky-500 text-white shadow-sm'
+                  ? 'bg-amber-500 text-slate-950 font-bold shadow-sm'
                   : 'text-slate-300 hover:text-white hover:bg-slate-800'
               }`}
             >
@@ -56,7 +58,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={() => setActiveTab('apk')}
               className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors shrink-0 ${
                 activeTab === 'apk'
-                  ? 'bg-sky-500 text-white shadow-sm'
+                  ? 'bg-amber-500 text-slate-950 font-bold shadow-sm'
                   : 'text-slate-300 hover:text-white hover:bg-slate-800'
               }`}
             >
@@ -68,7 +70,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={() => setActiveTab('code')}
               className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors shrink-0 ${
                 activeTab === 'code'
-                  ? 'bg-sky-500 text-white shadow-sm'
+                  ? 'bg-amber-500 text-slate-950 font-bold shadow-sm'
                   : 'text-slate-300 hover:text-white hover:bg-slate-800'
               }`}
             >
@@ -80,7 +82,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={() => setActiveTab('architecture')}
               className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors shrink-0 ${
                 activeTab === 'architecture'
-                  ? 'bg-sky-500 text-white shadow-sm'
+                  ? 'bg-amber-500 text-slate-950 font-bold shadow-sm'
                   : 'text-slate-300 hover:text-white hover:bg-slate-800'
               }`}
             >
@@ -95,7 +97,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={onDownloadZip}
               disabled={isDownloading}
               className="flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white text-xs sm:text-sm px-3.5 py-2 rounded-lg font-medium shadow-md shadow-emerald-900/30 transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
-              title="دانلود فایل‌های کامل سورس Tauri 2 و پروژه گریدل اندروید"
+              title="دانلود فایل‌های کامل سورس Tauri 2 و پروژه گریدل اندروید گروه آموزشی سورنا"
             >
               <Download className="w-4 h-4" />
               <span className="hidden sm:inline">دانلود سورس کامل</span>
@@ -103,11 +105,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
 
             <a
-              href="https://amvajsarmad.com"
+              href="https://sornac.ir/"
               target="_blank"
               rel="noreferrer"
               className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 hidden lg:block"
-              title="مشاهده وب‌سایت امواج سرمد در تب جدید"
+              title="مشاهده وب‌سایت گروه آموزشی سورنا در تب جدید"
             >
               <ExternalLink className="w-4 h-4" />
             </a>

@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.amvajsarmad.app"
+    namespace = "ir.sornac.app"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.amvajsarmad.app"
+        applicationId = "ir.sornac.app"
         minSdk = 26
         targetSdk = 34
         versionCode = 1
@@ -19,7 +19,7 @@ android {
             useSupportLibrary = true
         }
 
-        manifestPlaceholders["appLabel"] = "Amvaj Sarmad"
+        manifestPlaceholders["appLabel"] = "گروه آموزشی سورنا"
     }
 
     buildTypes {

@@ -1,4 +1,4 @@
-name: Build Amvaj Sarmad Android APK
+name: Build Sorna Educational Group Android APK
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-apk:
-    name: Build Android APK (Amvaj Sarmad)
+    name: Build Android APK (Sorna Educational Group)
     runs-on: ubuntu-latest
 
     steps:
@@ -30,12 +30,131 @@ jobs:
         with:
           gradle-version: '8.5'
 
-      - name: Verify & Prepare Android Project Structure
+      - name: Verify & Prepare Sorna Android Project Structure
         run: |
-          mkdir -p src-tauri/gen/android/app/src/main/java/com/amvajsarmad/app
-          mkdir -p src-tauri/gen/android/app/src/main/res/drawable
+          rm -rf src-tauri/gen/android/app/src/main/java/com
+          rm -rf src-tauri/gen/android/app/src/main/res/drawable
+          mkdir -p src-tauri/gen/android/app/src/main/java/ir/sornac/app
+          mkdir -p src-tauri/gen/android/app/src/main/res/drawable-nodpi
+          mkdir -p src-tauri/gen/android/app/src/main/res/mipmap-anydpi-v26
           mkdir -p src-tauri/gen/android/app/src/main/res/values
           mkdir -p src-tauri/gen/android/app/src/main/res/xml
+
+          base64 -d << 'EOF' > src-tauri/gen/android/app/src/main/res/drawable-nodpi/ic_launcher_logo.png
+          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
+          t6JAmxeNAAAAAElFTkSuQmCC
+          EOF
 
           cat << 'EOF' > src-tauri/gen/android/settings.gradle.kts
           pluginManagement {
@@ -52,14 +171,20 @@ jobs:
                   mavenCentral()
               }
           }
-          rootProject.name = "AmvajSarmadApp"
+          
+          rootProject.name = "SornaApp"
           include(":app")
           EOF
 
           cat << 'EOF' > src-tauri/gen/android/build.gradle.kts
+          // Top-level build file where you can add configuration options common to all sub-projects/modules.
           plugins {
               id("com.android.application") version "8.3.2" apply false
               id("org.jetbrains.kotlin.android") version "1.9.23" apply false
+          }
+          
+          tasks.register("clean", Delete::class) {
+              delete(rootProject.layout.buildDirectory)
           }
           EOF
 
@@ -75,23 +200,26 @@ jobs:
               id("com.android.application")
               id("org.jetbrains.kotlin.android")
           }
-
+          
           android {
-              namespace = "com.amvajsarmad.app"
+              namespace = "ir.sornac.app"
               compileSdk = 34
-
+          
               defaultConfig {
-                  applicationId = "com.amvajsarmad.app"
+                  applicationId = "ir.sornac.app"
                   minSdk = 26
                   targetSdk = 34
                   versionCode = 1
                   versionName = "1.0.0"
-
+          
+                  testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
                   vectorDrawables {
                       useSupportLibrary = true
                   }
+          
+                  manifestPlaceholders["appLabel"] = "گروه آموزشی سورنا"
               }
-
+          
               buildTypes {
                   release {
                       isMinifyEnabled = false
@@ -107,17 +235,22 @@ jobs:
                       isDebuggable = true
                   }
               }
-
+          
               compileOptions {
                   sourceCompatibility = JavaVersion.VERSION_17
                   targetCompatibility = JavaVersion.VERSION_17
               }
-
+          
               kotlinOptions {
                   jvmTarget = "17"
               }
+          
+              buildFeatures {
+                  viewBinding = true
+                  buildConfig = true
+              }
           }
-
+          
           dependencies {
               implementation("androidx.core:core-ktx:1.12.0")
               implementation("androidx.appcompat:appcompat:1.6.1")
@@ -130,48 +263,41 @@ jobs:
           EOF
 
           cat << 'EOF' > src-tauri/gen/android/app/proguard-rules.pro
+          # Proguard rules for Sorna Educational Group Android App
           -keepclassmembers class * {
               @android.webkit.JavascriptInterface <methods>;
           }
-          -keep class com.amvajsarmad.app.** { *; }
-          -dontwarn com.amvajsarmad.app.**
+          
+          -keep class ir.sornac.app.** { *; }
+          -dontwarn ir.sornac.app.**
+          
           -keep public class android.webkit.** { *; }
           EOF
 
-          cat << 'EOF' > src-tauri/gen/android/app/src/main/res/drawable/ic_launcher.xml
+          cat << 'EOF' > src-tauri/gen/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
           <?xml version="1.0" encoding="utf-8"?>
-          <vector xmlns:android="http://schemas.android.com/apk/res/android"
-              android:width="108dp"
-              android:height="108dp"
-              android:viewportWidth="108"
-              android:viewportHeight="108">
-              <path
-                  android:fillColor="#0369A1"
-                  android:pathData="M0,0h108v108h-108z" />
-              <path
-                  android:fillColor="#0284C7"
-                  android:pathData="M54,14A40,40 0,1 1,14 54A40,40 0,0 1,54 14z" />
-              <path
-                  android:fillColor="#FFFFFF"
-                  android:pathData="M30,60 C38,44 46,44 54,60 C62,76 70,76 78,60 L78,68 C70,84 62,84 54,68 C46,52 38,52 30,68 Z" />
-              <path
-                  android:fillColor="#38BDF8"
-                  android:pathData="M30,44 C38,28 46,28 54,44 C62,60 70,60 78,44 L78,52 C70,68 62,68 54,52 C46,36 38,36 30,52 Z" />
-          </vector>
+          <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+              <background android:drawable="@color/surface" />
+              <foreground>
+                  <inset
+                      android:drawable="@drawable/ic_launcher_logo"
+                      android:inset="14%" />
+              </foreground>
+          </adaptive-icon>
           EOF
 
           cat << 'EOF' > src-tauri/gen/android/app/src/main/res/values/strings.xml
           <resources>
-              <string name="app_name">امواج سرمد</string>
-              <string name="app_name_en">Amvaj Sarmad</string>
-              <string name="website_url">https://amvajsarmad.com</string>
+              <string name="app_name">گروه آموزشی سورنا</string>
+              <string name="app_name_en">Sorna Educational Group</string>
+              <string name="website_url">https://sornac.ir/</string>
               <string name="error_no_internet_title">عدم دسترسی به اینترنت</string>
               <string name="error_no_internet_msg">اتصال دستگاه شما به اینترنت قطع شده است. لطفاً وضعیت وای‌فای یا دیتای سیم‌کارت را بررسی نمایید.</string>
-              <string name="error_server_title">خطا در بارگذاری فروشگاه</string>
-              <string name="error_server_msg">امکان اتصال به سرورهای امواج سرمد فراهم نشد. لطفاً چند لحظه دیگر دوباره تلاش نمایید.</string>
+              <string name="error_server_title">خطا در بارگذاری سامانه سورنا</string>
+              <string name="error_server_msg">امکان اتصال به سرورهای گروه آموزشی سورنا فراهم نشد. لطفاً چند لحظه دیگر دوباره تلاش نمایید.</string>
               <string name="btn_retry">تلاش مجدد</string>
               <string name="btn_check_network">تنظیمات شبکه</string>
-              <string name="download_started">شروع دریافت فایل…</string>
+              <string name="download_started">شروع دریافت فایل آموزشی…</string>
               <string name="download_completed">دریافت فایل با موفقیت انجام شد</string>
           </resources>
           EOF
@@ -179,22 +305,22 @@ jobs:
           cat << 'EOF' > src-tauri/gen/android/app/src/main/res/values/colors.xml
           <?xml version="1.0" encoding="utf-8"?>
           <resources>
-              <color name="primary">#0284C7</color>
-              <color name="primary_dark">#0369A1</color>
-              <color name="primary_light">#38BDF8</color>
-              <color name="accent">#F59E0B</color>
+              <color name="primary">#001F54</color>
+              <color name="primary_dark">#001538</color>
+              <color name="primary_light">#1E3A8A</color>
+              <color name="accent">#EEA83B</color>
               <color name="background_light">#F8FAFC</color>
-              <color name="background_dark">#0F172A</color>
+              <color name="background_dark">#001538</color>
               <color name="surface">#FFFFFF</color>
-              <color name="text_primary">#0F172A</color>
-              <color name="text_secondary">#64748B</color>
-              <color name="status_bar_color">#0369A1</color>
+              <color name="text_primary">#001F54</color>
+              <color name="text_secondary">#475569</color>
+              <color name="status_bar_color">#001F54</color>
           </resources>
           EOF
 
           cat << 'EOF' > src-tauri/gen/android/app/src/main/res/values/styles.xml
           <resources>
-              <style name="Theme.AmvajSarmad" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+              <style name="Theme.Sorna" parent="Theme.MaterialComponents.DayNight.NoActionBar">
                   <item name="colorPrimary">@color/primary</item>
                   <item name="colorPrimaryVariant">@color/primary_dark</item>
                   <item name="colorOnPrimary">@color/surface</item>
@@ -210,12 +336,13 @@ jobs:
           <?xml version="1.0" encoding="utf-8"?>
           <network-security-config>
               <domain-config cleartextTrafficPermitted="false">
-                  <domain includeSubdomains="true">amvajsarmad.com</domain>
+                  <domain includeSubdomains="true">sornac.ir</domain>
                   <trust-anchors>
                       <certificates src="system" />
                       <certificates src="user" />
                   </trust-anchors>
               </domain-config>
+          
               <base-config cleartextTrafficPermitted="false">
                   <trust-anchors>
                       <certificates src="system" />
@@ -237,7 +364,7 @@ jobs:
           <?xml version="1.0" encoding="utf-8"?>
           <manifest xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:tools="http://schemas.android.com/tools">
-
+          
               <uses-permission android:name="android.permission.INTERNET" />
               <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
               <uses-permission android:name="android.permission.CAMERA" />
@@ -245,39 +372,43 @@ jobs:
               <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
               <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
               <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-
+          
               <application
                   android:allowBackup="true"
-                  android:icon="@drawable/ic_launcher"
+                  android:icon="@mipmap/ic_launcher"
                   android:label="@string/app_name"
-                  android:roundIcon="@drawable/ic_launcher"
+                  android:roundIcon="@mipmap/ic_launcher"
                   android:supportsRtl="true"
-                  android:theme="@style/Theme.AmvajSarmad"
+                  android:theme="@style/Theme.Sorna"
                   android:networkSecurityConfig="@xml/network_security_config"
                   android:usesCleartextTraffic="false"
                   tools:targetApi="34">
-
+          
                   <activity
                       android:name=".MainActivity"
                       android:exported="true"
                       android:launchMode="singleTask"
                       android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|smallestScreenSize"
                       android:windowSoftInputMode="adjustResize">
-
+          
                       <intent-filter>
                           <action android:name="android.intent.action.MAIN" />
                           <category android:name="android.intent.category.LAUNCHER" />
                       </intent-filter>
-
+          
                       <intent-filter android:autoVerify="true">
                           <action android:name="android.intent.action.VIEW" />
                           <category android:name="android.intent.category.DEFAULT" />
                           <category android:name="android.intent.category.BROWSABLE" />
-                          <data android:scheme="https" android:host="amvajsarmad.com" />
-                          <data android:scheme="https" android:host="*.amvajsarmad.com" />
+                          <data
+                              android:scheme="https"
+                              android:host="sornac.ir" />
+                          <data
+                              android:scheme="https"
+                              android:host="*.sornac.ir" />
                       </intent-filter>
                   </activity>
-
+          
                   <provider
                       android:name="androidx.core.content.FileProvider"
                       android:authorities="${applicationId}.fileprovider"
@@ -287,13 +418,15 @@ jobs:
                           android:name="android.support.FILE_PROVIDER_PATHS"
                           android:resource="@xml/file_paths" />
                   </provider>
+          
               </application>
+          
           </manifest>
           EOF
 
-          cat << 'EOF' > src-tauri/gen/android/app/src/main/java/com/amvajsarmad/app/MainActivity.kt
-          package com.amvajsarmad.app
-
+          cat << 'EOF' > src-tauri/gen/android/app/src/main/java/ir/sornac/app/MainActivity.kt
+          package ir.sornac.app
+          
           import android.annotation.SuppressLint
           import android.app.DownloadManager
           import android.content.Context
@@ -336,9 +469,9 @@ jobs:
           import java.text.SimpleDateFormat
           import java.util.Date
           import java.util.Locale
-
+          
           class MainActivity : AppCompatActivity() {
-
+          
               private lateinit var webView: WebView
               private lateinit var progressBar: ProgressBar
               private lateinit var swipeRefresh: SwipeRefreshLayout
@@ -346,24 +479,24 @@ jobs:
               private lateinit var btnRetry: Button
               private lateinit var tvErrorTitle: TextView
               private lateinit var tvErrorDesc: TextView
-
+          
               private var fileUploadCallback: ValueCallback<Array<Uri>>? = null
               private var cameraImageUri: Uri? = null
-
+          
               private lateinit var filePickerLauncher: ActivityResultLauncher<Intent>
-
-              private val targetUrl = "https://amvajsarmad.com"
+          
+              private val targetUrl = "https://sornac.ir/"
               private var isOffline = false
-
+          
               override fun onCreate(savedInstanceState: Bundle?) {
                   super.onCreate(savedInstanceState)
                   setContentView(buildDynamicLayout())
-
+          
                   setupActivityLaunchers()
                   setupWebView()
                   setupBackNavigation()
                   setupNetworkMonitoring()
-
+          
                   if (isNetworkAvailable()) {
                       loadTargetWebsite(targetUrl)
                   } else {
@@ -373,7 +506,7 @@ jobs:
                       )
                   }
               }
-
+          
               @SuppressLint("SetJavaScriptEnabled")
               private fun setupWebView() {
                   val settings = webView.settings
@@ -391,13 +524,13 @@ jobs:
                       cacheMode = WebSettings.LOAD_DEFAULT
                       mediaPlaybackRequiresUserGesture = false
                       mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
-                      userAgentString = "${settings.userAgentString ?: ""} AmvajSarmadAndroidApp/1.0.0"
+                      userAgentString = "${settings.userAgentString ?: ""} SornaAndroidApp/1.0.0"
                   }
-
+          
                   val cookieManager = CookieManager.getInstance()
                   cookieManager.setAcceptCookie(true)
                   cookieManager.setAcceptThirdPartyCookies(webView, true)
-
+          
                   swipeRefresh.setColorSchemeResources(R.color.primary)
                   swipeRefresh.setOnRefreshListener {
                       if (isNetworkAvailable()) {
@@ -411,7 +544,7 @@ jobs:
                           )
                       }
                   }
-
+          
                   webView.webViewClient = object : WebViewClient() {
                       override fun shouldOverrideUrlLoading(
                           view: WebView?,
@@ -420,19 +553,19 @@ jobs:
                           val url = request?.url?.toString() ?: return false
                           return handleUrlNavigation(url)
                       }
-
+          
                       override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                           super.onPageStarted(view, url, favicon)
                           progressBar.visibility = View.VISIBLE
                       }
-
+          
                       override fun onPageFinished(view: WebView?, url: String?) {
                           super.onPageFinished(view, url)
                           progressBar.visibility = View.GONE
                           swipeRefresh.isRefreshing = false
                           CookieManager.getInstance().flush()
                       }
-
+          
                       override fun onReceivedError(
                           view: WebView?,
                           request: WebResourceRequest?,
@@ -449,7 +582,7 @@ jobs:
                           }
                       }
                   }
-
+          
                   webView.webChromeClient = object : WebChromeClient() {
                       override fun onProgressChanged(view: WebView?, newProgress: Int) {
                           super.onProgressChanged(view, newProgress)
@@ -458,7 +591,7 @@ jobs:
                               progressBar.visibility = View.GONE
                           }
                       }
-
+          
                       override fun onShowFileChooser(
                           webView: WebView?,
                           filePathCallback: ValueCallback<Array<Uri>>?,
@@ -470,11 +603,11 @@ jobs:
                           return true
                       }
                   }
-
+          
                   webView.setDownloadListener { url, userAgent, contentDisposition, mimetype, _ ->
                       handleDownload(url, userAgent, contentDisposition, mimetype)
                   }
-
+          
                   btnRetry.setOnClickListener {
                       if (isNetworkAvailable()) {
                           hideErrorState()
@@ -489,11 +622,11 @@ jobs:
                       }
                   }
               }
-
+          
               private fun handleUrlNavigation(url: String): Boolean {
                   val uri = Uri.parse(url)
                   val host = uri.host?.lowercase(Locale.ROOT) ?: ""
-
+          
                   if (url.startsWith("tel:") || url.startsWith("mailto:") ||
                       url.startsWith("sms:") || url.startsWith("whatsapp:") ||
                       url.startsWith("tg:")
@@ -505,7 +638,7 @@ jobs:
                       }
                       return true
                   }
-
+          
                   val isBankingGateway = host.endsWith("shaparak.ir") ||
                           host.contains("zarinpal.com") ||
                           host.contains("idpay.ir") ||
@@ -513,9 +646,9 @@ jobs:
                           host.contains("nextpay.org") ||
                           host.contains("sadadpsp.ir") ||
                           host.contains("asanpardakht.ir")
-
-                  val isInternalDomain = host == "amvajsarmad.com" || host.endsWith(".amvajsarmad.com")
-
+          
+                  val isInternalDomain = host == "sornac.ir" || host.endsWith(".sornac.ir")
+          
                   return if (isInternalDomain || isBankingGateway) {
                       false
                   } else {
@@ -527,7 +660,7 @@ jobs:
                       true
                   }
               }
-
+          
               private fun handleDownload(
                   url: String?,
                   userAgent: String?,
@@ -538,7 +671,7 @@ jobs:
                   try {
                       val request = DownloadManager.Request(Uri.parse(url))
                       val filename = URLUtil.guessFileName(url, contentDisposition, mimeType)
-
+          
                       val cookies = CookieManager.getInstance().getCookie(url)
                       if (!cookies.isNullOrEmpty()) {
                           request.addRequestHeader("cookie", cookies)
@@ -550,16 +683,16 @@ jobs:
                       request.setTitle(filename)
                       request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                       request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, filename)
-
+          
                       val dm = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
                       dm.enqueue(request)
-
+          
                       Toast.makeText(this, getString(R.string.download_started), Toast.LENGTH_SHORT).show()
                   } catch (e: Exception) {
                       Toast.makeText(this, "خطا در شروع دانلود: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
                   }
               }
-
+          
               private fun setupBackNavigation() {
                   onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
                       override fun handleOnBackPressed() {
@@ -575,7 +708,7 @@ jobs:
                       }
                   })
               }
-
+          
               private fun setupActivityLaunchers() {
                   filePickerLauncher = registerForActivityResult(
                       ActivityResultContracts.StartActivityForResult()
@@ -593,14 +726,14 @@ jobs:
                       fileUploadCallback = null
                   }
               }
-
+          
               private fun openFileSelector() {
                   val galleryIntent = Intent(Intent.ACTION_GET_CONTENT).apply {
                       addCategory(Intent.CATEGORY_OPENABLE)
                       type = "*/*"
                       putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/*", "application/pdf"))
                   }
-
+          
                   val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                   if (cameraIntent.resolveActivity(packageManager) != null) {
                       val photoFile: File? = try {
@@ -617,29 +750,29 @@ jobs:
                           cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, cameraImageUri)
                       }
                   }
-
+          
                   val chooser = Intent.createChooser(galleryIntent, "انتخاب فایل یا عکس")
                   if (cameraIntent.resolveActivity(packageManager) != null && cameraImageUri != null) {
                       chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(cameraIntent))
                   }
-
+          
                   filePickerLauncher.launch(chooser)
               }
-
+          
               @Throws(IOException::class)
               private fun createImageFile(): File {
                   val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
                   val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
                   return File.createTempFile("JPEG_${timeStamp}_", ".jpg", storageDir)
               }
-
+          
               private fun setupNetworkMonitoring() {
                   val connectivityManager =
                       getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
                   val request = NetworkRequest.Builder()
                       .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
                       .build()
-
+          
                   connectivityManager.registerNetworkCallback(
                       request,
                       object : ConnectivityManager.NetworkCallback() {
@@ -654,7 +787,7 @@ jobs:
                                   }
                               }
                           }
-
+          
                           override fun onLost(network: Network) {
                               runOnUiThread {
                                   isOffline = true
@@ -663,31 +796,31 @@ jobs:
                       }
                   )
               }
-
+          
               private fun isNetworkAvailable(): Boolean {
                   val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
                   val activeNetwork = cm.activeNetwork ?: return false
                   val caps = cm.getNetworkCapabilities(activeNetwork) ?: return false
                   return caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
               }
-
+          
               private fun loadTargetWebsite(url: String) {
                   hideErrorState()
                   webView.loadUrl(url)
               }
-
+          
               private fun showErrorState(title: String, desc: String) {
                   tvErrorTitle.text = title
                   tvErrorDesc.text = desc
                   errorLayout.visibility = View.VISIBLE
                   webView.visibility = View.GONE
               }
-
+          
               private fun hideErrorState() {
                   errorLayout.visibility = View.GONE
                   webView.visibility = View.VISIBLE
               }
-
+          
               private fun buildDynamicLayout(): View {
                   val root = ConstraintLayout(this).apply {
                       layoutParams = ConstraintLayout.LayoutParams(
@@ -695,7 +828,7 @@ jobs:
                           ConstraintLayout.LayoutParams.MATCH_PARENT
                       )
                   }
-
+          
                   swipeRefresh = SwipeRefreshLayout(this).apply {
                       id = View.generateViewId()
                       layoutParams = ConstraintLayout.LayoutParams(
@@ -703,7 +836,7 @@ jobs:
                           ConstraintLayout.LayoutParams.MATCH_PARENT
                       )
                   }
-
+          
                   webView = WebView(this).apply {
                       id = View.generateViewId()
                       layoutParams = LinearLayout.LayoutParams(
@@ -713,11 +846,11 @@ jobs:
                   }
                   swipeRefresh.addView(webView)
                   root.addView(swipeRefresh)
-
+          
                   progressBar = ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal).apply {
                       id = View.generateViewId()
                       max = 100
-                      progressDrawable?.setTint(ContextCompat.getColor(this@MainActivity, R.color.primary))
+                      progressDrawable?.setTint(ContextCompat.getColor(this@MainActivity, R.color.accent))
                       val lp = ConstraintLayout.LayoutParams(
                           ConstraintLayout.LayoutParams.MATCH_PARENT,
                           8
@@ -726,7 +859,7 @@ jobs:
                       layoutParams = lp
                   }
                   root.addView(progressBar)
-
+          
                   errorLayout = LinearLayout(this).apply {
                       id = View.generateViewId()
                       orientation = LinearLayout.VERTICAL
@@ -740,7 +873,7 @@ jobs:
                       )
                       layoutParams = lp
                   }
-
+          
                   tvErrorTitle = TextView(this).apply {
                       textSize = 20f
                       setTextColor(ContextCompat.getColor(this@MainActivity, R.color.text_primary))
@@ -748,7 +881,7 @@ jobs:
                       setPadding(0, 24, 0, 16)
                   }
                   errorLayout.addView(tvErrorTitle)
-
+          
                   tvErrorDesc = TextView(this).apply {
                       textSize = 14f
                       setTextColor(ContextCompat.getColor(this@MainActivity, R.color.text_secondary))
@@ -756,30 +889,30 @@ jobs:
                       setPadding(0, 0, 0, 32)
                   }
                   errorLayout.addView(tvErrorDesc)
-
+          
                   btnRetry = Button(this).apply {
                       text = getString(R.string.btn_retry)
                       setBackgroundColor(ContextCompat.getColor(this@MainActivity, R.color.primary))
                       setTextColor(ContextCompat.getColor(this@MainActivity, R.color.surface))
                   }
                   errorLayout.addView(btnRetry)
-
+          
                   root.addView(errorLayout)
                   return root
               }
-
+          
               override fun onResume() {
                   super.onResume()
                   webView.onResume()
                   CookieManager.getInstance().flush()
               }
-
+          
               override fun onPause() {
                   super.onPause()
                   webView.onPause()
                   CookieManager.getInstance().flush()
               }
-
+          
               override fun onDestroy() {
                   webView.destroy()
                   super.onDestroy()
@@ -797,14 +930,14 @@ jobs:
         run: |
           gradle assembleRelease --stacktrace
 
-      - name: Upload Debug APK Artifact
+      - name: Upload Sorna Debug APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: amvaj-sarmad-debug-apk
+          name: sorna-debug-apk
           path: src-tauri/gen/android/app/build/outputs/apk/debug/*.apk
 
-      - name: Upload Release APK Artifact
+      - name: Upload Sorna Release APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: amvaj-sarmad-release-apk
+          name: sorna-release-apk
           path: src-tauri/gen/android/app/build/outputs/apk/release/*.apk

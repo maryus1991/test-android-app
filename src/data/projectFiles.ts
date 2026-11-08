@@ -1,1301 +1,151 @@
 export interface ProjectFile {
   path: string;
   name: string;
-  category: 'tauri' | 'rust' | 'android' | 'gradle' | 'ci' | 'docs';
-  language: 'json' | 'toml' | 'rust' | 'kotlin' | 'xml' | 'groovy' | 'yaml' | 'bash' | 'markdown';
+  category: "tauri" | "rust" | "android" | "gradle" | "ci" | "docs";
+  language: "json" | "toml" | "rust" | "kotlin" | "xml" | "groovy" | "yaml" | "bash" | "markdown";
   content: string;
   description: string;
 }
 
-export const GITHUB_WORKFLOW_YML = `name: Build Amvaj Sarmad Android APK
+export const SORNA_LOGO_BASE64 = "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";
 
-on:
-  push:
-    branches: [ "main", "master" ]
-  workflow_dispatch:
-
-jobs:
-  build-apk:
-    name: Build Android APK (Amvaj Sarmad)
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Setup Java JDK 17
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-
-      - name: Accept Android SDK Licenses
-        run: |
-          echo "Using Android SDK at: $ANDROID_HOME"
-          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
-
-      - name: Setup Gradle 8.5
-        uses: gradle/actions/setup-gradle@v3
-        with:
-          gradle-version: '8.5'
-
-      - name: Verify & Prepare Android Project Structure
-        run: |
-          mkdir -p src-tauri/gen/android/app/src/main/java/com/amvajsarmad/app
-          mkdir -p src-tauri/gen/android/app/src/main/res/drawable
-          mkdir -p src-tauri/gen/android/app/src/main/res/values
-          mkdir -p src-tauri/gen/android/app/src/main/res/xml
-
-          cat << 'EOF' > src-tauri/gen/android/settings.gradle.kts
-          pluginManagement {
-              repositories {
-                  google()
-                  mavenCentral()
-                  gradlePluginPortal()
-              }
-          }
-          dependencyResolutionManagement {
-              repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-              repositories {
-                  google()
-                  mavenCentral()
-              }
-          }
-          rootProject.name = "AmvajSarmadApp"
-          include(":app")
-          EOF
-
-          cat << 'EOF' > src-tauri/gen/android/build.gradle.kts
-          plugins {
-              id("com.android.application") version "8.3.2" apply false
-              id("org.jetbrains.kotlin.android") version "1.9.23" apply false
-          }
-          EOF
-
-          cat << 'EOF' > src-tauri/gen/android/gradle.properties
-          org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
-          android.useAndroidX=true
-          android.nonTransitiveRClass=true
-          kotlin.code.style=official
-          EOF
-
-          cat << 'EOF' > src-tauri/gen/android/app/build.gradle.kts
-          plugins {
-              id("com.android.application")
-              id("org.jetbrains.kotlin.android")
-          }
-
-          android {
-              namespace = "com.amvajsarmad.app"
-              compileSdk = 34
-
-              defaultConfig {
-                  applicationId = "com.amvajsarmad.app"
-                  minSdk = 26
-                  targetSdk = 34
-                  versionCode = 1
-                  versionName = "1.0.0"
-
-                  vectorDrawables {
-                      useSupportLibrary = true
-                  }
-              }
-
-              buildTypes {
-                  release {
-                      isMinifyEnabled = false
-                      isShrinkResources = false
-                      proguardFiles(
-                          getDefaultProguardFile("proguard-android-optimize.txt"),
-                          "proguard-rules.pro"
-                      )
-                      signingConfig = signingConfigs.getByName("debug")
-                  }
-                  debug {
-                      applicationIdSuffix = ".debug"
-                      isDebuggable = true
-                  }
-              }
-
-              compileOptions {
-                  sourceCompatibility = JavaVersion.VERSION_17
-                  targetCompatibility = JavaVersion.VERSION_17
-              }
-
-              kotlinOptions {
-                  jvmTarget = "17"
-              }
-          }
-
-          dependencies {
-              implementation("androidx.core:core-ktx:1.12.0")
-              implementation("androidx.appcompat:appcompat:1.6.1")
-              implementation("com.google.android.material:material:1.11.0")
-              implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-              implementation("androidx.webkit:webkit:1.10.0")
-              implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
-              implementation("androidx.activity:activity-ktx:1.8.2")
-          }
-          EOF
-
-          cat << 'EOF' > src-tauri/gen/android/app/proguard-rules.pro
-          -keepclassmembers class * {
-              @android.webkit.JavascriptInterface <methods>;
-          }
-          -keep class com.amvajsarmad.app.** { *; }
-          -dontwarn com.amvajsarmad.app.**
-          -keep public class android.webkit.** { *; }
-          EOF
-
-          cat << 'EOF' > src-tauri/gen/android/app/src/main/res/drawable/ic_launcher.xml
-          <?xml version="1.0" encoding="utf-8"?>
-          <vector xmlns:android="http://schemas.android.com/apk/res/android"
-              android:width="108dp"
-              android:height="108dp"
-              android:viewportWidth="108"
-              android:viewportHeight="108">
-              <path
-                  android:fillColor="#0369A1"
-                  android:pathData="M0,0h108v108h-108z" />
-              <path
-                  android:fillColor="#0284C7"
-                  android:pathData="M54,14A40,40 0,1 1,14 54A40,40 0,0 1,54 14z" />
-              <path
-                  android:fillColor="#FFFFFF"
-                  android:pathData="M30,60 C38,44 46,44 54,60 C62,76 70,76 78,60 L78,68 C70,84 62,84 54,68 C46,52 38,52 30,68 Z" />
-              <path
-                  android:fillColor="#38BDF8"
-                  android:pathData="M30,44 C38,28 46,28 54,44 C62,60 70,60 78,44 L78,52 C70,68 62,68 54,52 C46,36 38,36 30,52 Z" />
-          </vector>
-          EOF
-
-          cat << 'EOF' > src-tauri/gen/android/app/src/main/res/values/strings.xml
-          <resources>
-              <string name="app_name">امواج سرمد</string>
-              <string name="app_name_en">Amvaj Sarmad</string>
-              <string name="website_url">https://amvajsarmad.com</string>
-              <string name="error_no_internet_title">عدم دسترسی به اینترنت</string>
-              <string name="error_no_internet_msg">اتصال دستگاه شما به اینترنت قطع شده است. لطفاً وضعیت وای‌فای یا دیتای سیم‌کارت را بررسی نمایید.</string>
-              <string name="error_server_title">خطا در بارگذاری فروشگاه</string>
-              <string name="error_server_msg">امکان اتصال به سرورهای امواج سرمد فراهم نشد. لطفاً چند لحظه دیگر دوباره تلاش نمایید.</string>
-              <string name="btn_retry">تلاش مجدد</string>
-              <string name="btn_check_network">تنظیمات شبکه</string>
-              <string name="download_started">شروع دریافت فایل…</string>
-              <string name="download_completed">دریافت فایل با موفقیت انجام شد</string>
-          </resources>
-          EOF
-
-          cat << 'EOF' > src-tauri/gen/android/app/src/main/res/values/colors.xml
-          <?xml version="1.0" encoding="utf-8"?>
-          <resources>
-              <color name="primary">#0284C7</color>
-              <color name="primary_dark">#0369A1</color>
-              <color name="primary_light">#38BDF8</color>
-              <color name="accent">#F59E0B</color>
-              <color name="background_light">#F8FAFC</color>
-              <color name="background_dark">#0F172A</color>
-              <color name="surface">#FFFFFF</color>
-              <color name="text_primary">#0F172A</color>
-              <color name="text_secondary">#64748B</color>
-              <color name="status_bar_color">#0369A1</color>
-          </resources>
-          EOF
-
-          cat << 'EOF' > src-tauri/gen/android/app/src/main/res/values/styles.xml
-          <resources>
-              <style name="Theme.AmvajSarmad" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-                  <item name="colorPrimary">@color/primary</item>
-                  <item name="colorPrimaryVariant">@color/primary_dark</item>
-                  <item name="colorOnPrimary">@color/surface</item>
-                  <item name="colorSecondary">@color/accent</item>
-                  <item name="android:statusBarColor">@color/status_bar_color</item>
-                  <item name="android:windowLightStatusBar">false</item>
-                  <item name="android:navigationBarColor">@color/background_dark</item>
-              </style>
-          </resources>
-          EOF
-
-          cat << 'EOF' > src-tauri/gen/android/app/src/main/res/xml/network_security_config.xml
-          <?xml version="1.0" encoding="utf-8"?>
-          <network-security-config>
-              <domain-config cleartextTrafficPermitted="false">
-                  <domain includeSubdomains="true">amvajsarmad.com</domain>
-                  <trust-anchors>
-                      <certificates src="system" />
-                      <certificates src="user" />
-                  </trust-anchors>
-              </domain-config>
-              <base-config cleartextTrafficPermitted="false">
-                  <trust-anchors>
-                      <certificates src="system" />
-                  </trust-anchors>
-              </base-config>
-          </network-security-config>
-          EOF
-
-          cat << 'EOF' > src-tauri/gen/android/app/src/main/res/xml/file_paths.xml
-          <?xml version="1.0" encoding="utf-8"?>
-          <paths>
-              <external-files-path name="my_images" path="Pictures" />
-              <external-cache-path name="cached_images" path="/" />
-              <cache-path name="internal_cache" path="/" />
-          </paths>
-          EOF
-
-          cat << 'EOF' > src-tauri/gen/android/app/src/main/AndroidManifest.xml
-          <?xml version="1.0" encoding="utf-8"?>
-          <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools">
-
-              <uses-permission android:name="android.permission.INTERNET" />
-              <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-              <uses-permission android:name="android.permission.CAMERA" />
-              <uses-feature android:name="android.hardware.camera" android:required="false" />
-              <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
-              <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-              <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-
-              <application
-                  android:allowBackup="true"
-                  android:icon="@drawable/ic_launcher"
-                  android:label="@string/app_name"
-                  android:roundIcon="@drawable/ic_launcher"
-                  android:supportsRtl="true"
-                  android:theme="@style/Theme.AmvajSarmad"
-                  android:networkSecurityConfig="@xml/network_security_config"
-                  android:usesCleartextTraffic="false"
-                  tools:targetApi="34">
-
-                  <activity
-                      android:name=".MainActivity"
-                      android:exported="true"
-                      android:launchMode="singleTask"
-                      android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|smallestScreenSize"
-                      android:windowSoftInputMode="adjustResize">
-
-                      <intent-filter>
-                          <action android:name="android.intent.action.MAIN" />
-                          <category android:name="android.intent.category.LAUNCHER" />
-                      </intent-filter>
-
-                      <intent-filter android:autoVerify="true">
-                          <action android:name="android.intent.action.VIEW" />
-                          <category android:name="android.intent.category.DEFAULT" />
-                          <category android:name="android.intent.category.BROWSABLE" />
-                          <data android:scheme="https" android:host="amvajsarmad.com" />
-                          <data android:scheme="https" android:host="*.amvajsarmad.com" />
-                      </intent-filter>
-                  </activity>
-
-                  <provider
-                      android:name="androidx.core.content.FileProvider"
-                      android:authorities="\${applicationId}.fileprovider"
-                      android:exported="false"
-                      android:grantUriPermissions="true">
-                      <meta-data
-                          android:name="android.support.FILE_PROVIDER_PATHS"
-                          android:resource="@xml/file_paths" />
-                  </provider>
-              </application>
-          </manifest>
-          EOF
-
-      - name: Build Android Debug APK
-        working-directory: src-tauri/gen/android
-        run: |
-          gradle assembleDebug --stacktrace
-
-      - name: Build Android Release APK
-        working-directory: src-tauri/gen/android
-        run: |
-          gradle assembleRelease --stacktrace
-
-      - name: Upload Debug APK Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: amvaj-sarmad-debug-apk
-          path: src-tauri/gen/android/app/build/outputs/apk/debug/*.apk
-
-      - name: Upload Release APK Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: amvaj-sarmad-release-apk
-          path: src-tauri/gen/android/app/build/outputs/apk/release/*.apk
-`;
+export const GITHUB_WORKFLOW_YML = "name: Build Sorna Educational Group Android APK\n\non:\n  push:\n    branches: [ \"main\", \"master\" ]\n  workflow_dispatch:\n\njobs:\n  build-apk:\n    name: Build Android APK (Sorna Educational Group)\n    runs-on: ubuntu-latest\n\n    steps:\n      - name: Checkout Repository\n        uses: actions/checkout@v4\n\n      - name: Setup Java JDK 17\n        uses: actions/setup-java@v4\n        with:\n          distribution: 'temurin'\n          java-version: '17'\n\n      - name: Accept Android SDK Licenses\n        run: |\n          echo \"Using Android SDK at: $ANDROID_HOME\"\n          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true\n\n      - name: Setup Gradle 8.5\n        uses: gradle/actions/setup-gradle@v3\n        with:\n          gradle-version: '8.5'\n\n      - name: Verify & Prepare Sorna Android Project Structure\n        run: |\n          rm -rf src-tauri/gen/android/app/src/main/java/com\n          rm -rf src-tauri/gen/android/app/src/main/res/drawable\n          mkdir -p src-tauri/gen/android/app/src/main/java/ir/sornac/app\n          mkdir -p src-tauri/gen/android/app/src/main/res/drawable-nodpi\n          mkdir -p src-tauri/gen/android/app/src/main/res/mipmap-anydpi-v26\n          mkdir -p src-tauri/gen/android/app/src/main/res/values\n          mkdir -p src-tauri/gen/android/app/src/main/res/xml\n\n          base64 -d << 'EOF' > src-tauri/gen/android/app/src/main/res/drawable-nodpi/ic_launcher_logo.png\n          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\n          t6JAmxeNAAAAAElFTkSuQmCC\n          EOF\n\n          cat << 'EOF' > src-tauri/gen/android/settings.gradle.kts\n          pluginManagement {\n              repositories {\n                  google()\n                  mavenCentral()\n                  gradlePluginPortal()\n              }\n          }\n          dependencyResolutionManagement {\n              repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)\n              repositories {\n                  google()\n                  mavenCentral()\n              }\n          }\n          \n          rootProject.name = \"SornaApp\"\n          include(\":app\")\n          EOF\n\n          cat << 'EOF' > src-tauri/gen/android/build.gradle.kts\n          // Top-level build file where you can add configuration options common to all sub-projects/modules.\n          plugins {\n              id(\"com.android.application\") version \"8.3.2\" apply false\n              id(\"org.jetbrains.kotlin.android\") version \"1.9.23\" apply false\n          }\n          \n          tasks.register(\"clean\", Delete::class) {\n              delete(rootProject.layout.buildDirectory)\n          }\n          EOF\n\n          cat << 'EOF' > src-tauri/gen/android/gradle.properties\n          org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8\n          android.useAndroidX=true\n          android.nonTransitiveRClass=true\n          kotlin.code.style=official\n          EOF\n\n          cat << 'EOF' > src-tauri/gen/android/app/build.gradle.kts\n          plugins {\n              id(\"com.android.application\")\n              id(\"org.jetbrains.kotlin.android\")\n          }\n          \n          android {\n              namespace = \"ir.sornac.app\"\n              compileSdk = 34\n          \n              defaultConfig {\n                  applicationId = \"ir.sornac.app\"\n                  minSdk = 26\n                  targetSdk = 34\n                  versionCode = 1\n                  versionName = \"1.0.0\"\n          \n                  testInstrumentationRunner = \"androidx.test.runner.AndroidJUnitRunner\"\n                  vectorDrawables {\n                      useSupportLibrary = true\n                  }\n          \n                  manifestPlaceholders[\"appLabel\"] = \"گروه آموزشی سورنا\"\n              }\n          \n              buildTypes {\n                  release {\n                      isMinifyEnabled = false\n                      isShrinkResources = false\n                      proguardFiles(\n                          getDefaultProguardFile(\"proguard-android-optimize.txt\"),\n                          \"proguard-rules.pro\"\n                      )\n                      signingConfig = signingConfigs.getByName(\"debug\")\n                  }\n                  debug {\n                      applicationIdSuffix = \".debug\"\n                      isDebuggable = true\n                  }\n              }\n          \n              compileOptions {\n                  sourceCompatibility = JavaVersion.VERSION_17\n                  targetCompatibility = JavaVersion.VERSION_17\n              }\n          \n              kotlinOptions {\n                  jvmTarget = \"17\"\n              }\n          \n              buildFeatures {\n                  viewBinding = true\n                  buildConfig = true\n              }\n          }\n          \n          dependencies {\n              implementation(\"androidx.core:core-ktx:1.12.0\")\n              implementation(\"androidx.appcompat:appcompat:1.6.1\")\n              implementation(\"com.google.android.material:material:1.11.0\")\n              implementation(\"androidx.constraintlayout:constraintlayout:2.1.4\")\n              implementation(\"androidx.webkit:webkit:1.10.0\")\n              implementation(\"androidx.swiperefreshlayout:swiperefreshlayout:1.1.0\")\n              implementation(\"androidx.activity:activity-ktx:1.8.2\")\n          }\n          EOF\n\n          cat << 'EOF' > src-tauri/gen/android/app/proguard-rules.pro\n          # Proguard rules for Sorna Educational Group Android App\n          -keepclassmembers class * {\n              @android.webkit.JavascriptInterface <methods>;\n          }\n          \n          -keep class ir.sornac.app.** { *; }\n          -dontwarn ir.sornac.app.**\n          \n          -keep public class android.webkit.** { *; }\n          EOF\n\n          cat << 'EOF' > src-tauri/gen/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml\n          <?xml version=\"1.0\" encoding=\"utf-8\"?>\n          <adaptive-icon xmlns:android=\"http://schemas.android.com/apk/res/android\">\n              <background android:drawable=\"@color/surface\" />\n              <foreground>\n                  <inset\n                      android:drawable=\"@drawable/ic_launcher_logo\"\n                      android:inset=\"14%\" />\n              </foreground>\n          </adaptive-icon>\n          EOF\n\n          cat << 'EOF' > src-tauri/gen/android/app/src/main/res/values/strings.xml\n          <resources>\n              <string name=\"app_name\">گروه آموزشی سورنا</string>\n              <string name=\"app_name_en\">Sorna Educational Group</string>\n              <string name=\"website_url\">https://sornac.ir/</string>\n              <string name=\"error_no_internet_title\">عدم دسترسی به اینترنت</string>\n              <string name=\"error_no_internet_msg\">اتصال دستگاه شما به اینترنت قطع شده است. لطفاً وضعیت وای‌فای یا دیتای سیم‌کارت را بررسی نمایید.</string>\n              <string name=\"error_server_title\">خطا در بارگذاری سامانه سورنا</string>\n              <string name=\"error_server_msg\">امکان اتصال به سرورهای گروه آموزشی سورنا فراهم نشد. لطفاً چند لحظه دیگر دوباره تلاش نمایید.</string>\n              <string name=\"btn_retry\">تلاش مجدد</string>\n              <string name=\"btn_check_network\">تنظیمات شبکه</string>\n              <string name=\"download_started\">شروع دریافت فایل آموزشی…</string>\n              <string name=\"download_completed\">دریافت فایل با موفقیت انجام شد</string>\n          </resources>\n          EOF\n\n          cat << 'EOF' > src-tauri/gen/android/app/src/main/res/values/colors.xml\n          <?xml version=\"1.0\" encoding=\"utf-8\"?>\n          <resources>\n              <color name=\"primary\">#001F54</color>\n              <color name=\"primary_dark\">#001538</color>\n              <color name=\"primary_light\">#1E3A8A</color>\n              <color name=\"accent\">#EEA83B</color>\n              <color name=\"background_light\">#F8FAFC</color>\n              <color name=\"background_dark\">#001538</color>\n              <color name=\"surface\">#FFFFFF</color>\n              <color name=\"text_primary\">#001F54</color>\n              <color name=\"text_secondary\">#475569</color>\n              <color name=\"status_bar_color\">#001F54</color>\n          </resources>\n          EOF\n\n          cat << 'EOF' > src-tauri/gen/android/app/src/main/res/values/styles.xml\n          <resources>\n              <style name=\"Theme.Sorna\" parent=\"Theme.MaterialComponents.DayNight.NoActionBar\">\n                  <item name=\"colorPrimary\">@color/primary</item>\n                  <item name=\"colorPrimaryVariant\">@color/primary_dark</item>\n                  <item name=\"colorOnPrimary\">@color/surface</item>\n                  <item name=\"colorSecondary\">@color/accent</item>\n                  <item name=\"android:statusBarColor\">@color/status_bar_color</item>\n                  <item name=\"android:windowLightStatusBar\">false</item>\n                  <item name=\"android:navigationBarColor\">@color/background_dark</item>\n              </style>\n          </resources>\n          EOF\n\n          cat << 'EOF' > src-tauri/gen/android/app/src/main/res/xml/network_security_config.xml\n          <?xml version=\"1.0\" encoding=\"utf-8\"?>\n          <network-security-config>\n              <domain-config cleartextTrafficPermitted=\"false\">\n                  <domain includeSubdomains=\"true\">sornac.ir</domain>\n                  <trust-anchors>\n                      <certificates src=\"system\" />\n                      <certificates src=\"user\" />\n                  </trust-anchors>\n              </domain-config>\n          \n              <base-config cleartextTrafficPermitted=\"false\">\n                  <trust-anchors>\n                      <certificates src=\"system\" />\n                  </trust-anchors>\n              </base-config>\n          </network-security-config>\n          EOF\n\n          cat << 'EOF' > src-tauri/gen/android/app/src/main/res/xml/file_paths.xml\n          <?xml version=\"1.0\" encoding=\"utf-8\"?>\n          <paths>\n              <external-files-path name=\"my_images\" path=\"Pictures\" />\n              <external-cache-path name=\"cached_images\" path=\"/\" />\n              <cache-path name=\"internal_cache\" path=\"/\" />\n          </paths>\n          EOF\n\n          cat << 'EOF' > src-tauri/gen/android/app/src/main/AndroidManifest.xml\n          <?xml version=\"1.0\" encoding=\"utf-8\"?>\n          <manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\n              xmlns:tools=\"http://schemas.android.com/tools\">\n          \n              <uses-permission android:name=\"android.permission.INTERNET\" />\n              <uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\" />\n              <uses-permission android:name=\"android.permission.CAMERA\" />\n              <uses-feature android:name=\"android.hardware.camera\" android:required=\"false\" />\n              <uses-permission android:name=\"android.permission.READ_EXTERNAL_STORAGE\" android:maxSdkVersion=\"32\" />\n              <uses-permission android:name=\"android.permission.READ_MEDIA_IMAGES\" />\n              <uses-permission android:name=\"android.permission.POST_NOTIFICATIONS\" />\n          \n              <application\n                  android:allowBackup=\"true\"\n                  android:icon=\"@mipmap/ic_launcher\"\n                  android:label=\"@string/app_name\"\n                  android:roundIcon=\"@mipmap/ic_launcher\"\n                  android:supportsRtl=\"true\"\n                  android:theme=\"@style/Theme.Sorna\"\n                  android:networkSecurityConfig=\"@xml/network_security_config\"\n                  android:usesCleartextTraffic=\"false\"\n                  tools:targetApi=\"34\">\n          \n                  <activity\n                      android:name=\".MainActivity\"\n                      android:exported=\"true\"\n                      android:launchMode=\"singleTask\"\n                      android:configChanges=\"orientation|screenSize|screenLayout|keyboardHidden|smallestScreenSize\"\n                      android:windowSoftInputMode=\"adjustResize\">\n          \n                      <intent-filter>\n                          <action android:name=\"android.intent.action.MAIN\" />\n                          <category android:name=\"android.intent.category.LAUNCHER\" />\n                      </intent-filter>\n          \n                      <intent-filter android:autoVerify=\"true\">\n                          <action android:name=\"android.intent.action.VIEW\" />\n                          <category android:name=\"android.intent.category.DEFAULT\" />\n                          <category android:name=\"android.intent.category.BROWSABLE\" />\n                          <data\n                              android:scheme=\"https\"\n                              android:host=\"sornac.ir\" />\n                          <data\n                              android:scheme=\"https\"\n                              android:host=\"*.sornac.ir\" />\n                      </intent-filter>\n                  </activity>\n          \n                  <provider\n                      android:name=\"androidx.core.content.FileProvider\"\n                      android:authorities=\"${applicationId}.fileprovider\"\n                      android:exported=\"false\"\n                      android:grantUriPermissions=\"true\">\n                      <meta-data\n                          android:name=\"android.support.FILE_PROVIDER_PATHS\"\n                          android:resource=\"@xml/file_paths\" />\n                  </provider>\n          \n              </application>\n          \n          </manifest>\n          EOF\n\n          cat << 'EOF' > src-tauri/gen/android/app/src/main/java/ir/sornac/app/MainActivity.kt\n          package ir.sornac.app\n          \n          import android.annotation.SuppressLint\n          import android.app.DownloadManager\n          import android.content.Context\n          import android.content.Intent\n          import android.graphics.Bitmap\n          import android.net.ConnectivityManager\n          import android.net.Network\n          import android.net.NetworkCapabilities\n          import android.net.NetworkRequest\n          import android.net.Uri\n          import android.os.Bundle\n          import android.os.Environment\n          import android.provider.MediaStore\n          import android.view.Gravity\n          import android.view.View\n          import android.webkit.CookieManager\n          import android.webkit.URLUtil\n          import android.webkit.ValueCallback\n          import android.webkit.WebChromeClient\n          import android.webkit.WebResourceError\n          import android.webkit.WebResourceRequest\n          import android.webkit.WebSettings\n          import android.webkit.WebView\n          import android.webkit.WebViewClient\n          import android.widget.Button\n          import android.widget.LinearLayout\n          import android.widget.ProgressBar\n          import android.widget.TextView\n          import android.widget.Toast\n          import androidx.activity.OnBackPressedCallback\n          import androidx.activity.result.ActivityResultLauncher\n          import androidx.activity.result.contract.ActivityResultContracts\n          import androidx.appcompat.app.AppCompatActivity\n          import androidx.constraintlayout.widget.ConstraintLayout\n          import androidx.core.content.ContextCompat\n          import androidx.core.content.FileProvider\n          import androidx.swiperefreshlayout.widget.SwipeRefreshLayout\n          import java.io.File\n          import java.io.IOException\n          import java.text.SimpleDateFormat\n          import java.util.Date\n          import java.util.Locale\n          \n          class MainActivity : AppCompatActivity() {\n          \n              private lateinit var webView: WebView\n              private lateinit var progressBar: ProgressBar\n              private lateinit var swipeRefresh: SwipeRefreshLayout\n              private lateinit var errorLayout: LinearLayout\n              private lateinit var btnRetry: Button\n              private lateinit var tvErrorTitle: TextView\n              private lateinit var tvErrorDesc: TextView\n          \n              private var fileUploadCallback: ValueCallback<Array<Uri>>? = null\n              private var cameraImageUri: Uri? = null\n          \n              private lateinit var filePickerLauncher: ActivityResultLauncher<Intent>\n          \n              private val targetUrl = \"https://sornac.ir/\"\n              private var isOffline = false\n          \n              override fun onCreate(savedInstanceState: Bundle?) {\n                  super.onCreate(savedInstanceState)\n                  setContentView(buildDynamicLayout())\n          \n                  setupActivityLaunchers()\n                  setupWebView()\n                  setupBackNavigation()\n                  setupNetworkMonitoring()\n          \n                  if (isNetworkAvailable()) {\n                      loadTargetWebsite(targetUrl)\n                  } else {\n                      showErrorState(\n                          getString(R.string.error_no_internet_title),\n                          getString(R.string.error_no_internet_msg)\n                      )\n                  }\n              }\n          \n              @SuppressLint(\"SetJavaScriptEnabled\")\n              private fun setupWebView() {\n                  val settings = webView.settings\n                  settings.apply {\n                      javaScriptEnabled = true\n                      domStorageEnabled = true\n                      databaseEnabled = true\n                      allowFileAccess = true\n                      allowContentAccess = true\n                      loadWithOverviewMode = true\n                      useWideViewPort = true\n                      setSupportZoom(true)\n                      builtInZoomControls = true\n                      displayZoomControls = false\n                      cacheMode = WebSettings.LOAD_DEFAULT\n                      mediaPlaybackRequiresUserGesture = false\n                      mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW\n                      userAgentString = \"${settings.userAgentString ?: \"\"} SornaAndroidApp/1.0.0\"\n                  }\n          \n                  val cookieManager = CookieManager.getInstance()\n                  cookieManager.setAcceptCookie(true)\n                  cookieManager.setAcceptThirdPartyCookies(webView, true)\n          \n                  swipeRefresh.setColorSchemeResources(R.color.primary)\n                  swipeRefresh.setOnRefreshListener {\n                      if (isNetworkAvailable()) {\n                          hideErrorState()\n                          webView.reload()\n                      } else {\n                          swipeRefresh.isRefreshing = false\n                          showErrorState(\n                              getString(R.string.error_no_internet_title),\n                              getString(R.string.error_no_internet_msg)\n                          )\n                      }\n                  }\n          \n                  webView.webViewClient = object : WebViewClient() {\n                      override fun shouldOverrideUrlLoading(\n                          view: WebView?,\n                          request: WebResourceRequest?\n                      ): Boolean {\n                          val url = request?.url?.toString() ?: return false\n                          return handleUrlNavigation(url)\n                      }\n          \n                      override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {\n                          super.onPageStarted(view, url, favicon)\n                          progressBar.visibility = View.VISIBLE\n                      }\n          \n                      override fun onPageFinished(view: WebView?, url: String?) {\n                          super.onPageFinished(view, url)\n                          progressBar.visibility = View.GONE\n                          swipeRefresh.isRefreshing = false\n                          CookieManager.getInstance().flush()\n                      }\n          \n                      override fun onReceivedError(\n                          view: WebView?,\n                          request: WebResourceRequest?,\n                          error: WebResourceError?\n                      ) {\n                          super.onReceivedError(view, request, error)\n                          if (request?.isForMainFrame == true) {\n                              progressBar.visibility = View.GONE\n                              swipeRefresh.isRefreshing = false\n                              showErrorState(\n                                  getString(R.string.error_server_title),\n                                  getString(R.string.error_server_msg)\n                              )\n                          }\n                      }\n                  }\n          \n                  webView.webChromeClient = object : WebChromeClient() {\n                      override fun onProgressChanged(view: WebView?, newProgress: Int) {\n                          super.onProgressChanged(view, newProgress)\n                          progressBar.progress = newProgress\n                          if (newProgress == 100) {\n                              progressBar.visibility = View.GONE\n                          }\n                      }\n          \n                      override fun onShowFileChooser(\n                          webView: WebView?,\n                          filePathCallback: ValueCallback<Array<Uri>>?,\n                          fileChooserParams: FileChooserParams?\n                      ): Boolean {\n                          fileUploadCallback?.onReceiveValue(null)\n                          fileUploadCallback = filePathCallback\n                          openFileSelector()\n                          return true\n                      }\n                  }\n          \n                  webView.setDownloadListener { url, userAgent, contentDisposition, mimetype, _ ->\n                      handleDownload(url, userAgent, contentDisposition, mimetype)\n                  }\n          \n                  btnRetry.setOnClickListener {\n                      if (isNetworkAvailable()) {\n                          hideErrorState()\n                          progressBar.visibility = View.VISIBLE\n                          webView.reload()\n                      } else {\n                          Toast.makeText(\n                              this,\n                              R.string.error_no_internet_msg,\n                              Toast.LENGTH_SHORT\n                          ).show()\n                      }\n                  }\n              }\n          \n              private fun handleUrlNavigation(url: String): Boolean {\n                  val uri = Uri.parse(url)\n                  val host = uri.host?.lowercase(Locale.ROOT) ?: \"\"\n          \n                  if (url.startsWith(\"tel:\") || url.startsWith(\"mailto:\") ||\n                      url.startsWith(\"sms:\") || url.startsWith(\"whatsapp:\") ||\n                      url.startsWith(\"tg:\")\n                  ) {\n                      try {\n                          startActivity(Intent(Intent.ACTION_VIEW, uri))\n                      } catch (e: Exception) {\n                          Toast.makeText(this, \"برنامه‌ای برای باز کردن این پیوند یافت نشد\", Toast.LENGTH_SHORT).show()\n                      }\n                      return true\n                  }\n          \n                  val isBankingGateway = host.endsWith(\"shaparak.ir\") ||\n                          host.contains(\"zarinpal.com\") ||\n                          host.contains(\"idpay.ir\") ||\n                          host.contains(\"pay.ir\") ||\n                          host.contains(\"nextpay.org\") ||\n                          host.contains(\"sadadpsp.ir\") ||\n                          host.contains(\"asanpardakht.ir\")\n          \n                  val isInternalDomain = host == \"sornac.ir\" || host.endsWith(\".sornac.ir\")\n          \n                  return if (isInternalDomain || isBankingGateway) {\n                      false\n                  } else {\n                      try {\n                          val intent = Intent(Intent.ACTION_VIEW, uri)\n                          startActivity(intent)\n                      } catch (e: Exception) {\n                      }\n                      true\n                  }\n              }\n          \n              private fun handleDownload(\n                  url: String?,\n                  userAgent: String?,\n                  contentDisposition: String?,\n                  mimeType: String?\n              ) {\n                  if (url.isNullOrEmpty()) return\n                  try {\n                      val request = DownloadManager.Request(Uri.parse(url))\n                      val filename = URLUtil.guessFileName(url, contentDisposition, mimeType)\n          \n                      val cookies = CookieManager.getInstance().getCookie(url)\n                      if (!cookies.isNullOrEmpty()) {\n                          request.addRequestHeader(\"cookie\", cookies)\n                      }\n                      if (!userAgent.isNullOrEmpty()) {\n                          request.addRequestHeader(\"User-Agent\", userAgent)\n                      }\n                      request.setDescription(getString(R.string.download_started))\n                      request.setTitle(filename)\n                      request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)\n                      request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, filename)\n          \n                      val dm = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager\n                      dm.enqueue(request)\n          \n                      Toast.makeText(this, getString(R.string.download_started), Toast.LENGTH_SHORT).show()\n                  } catch (e: Exception) {\n                      Toast.makeText(this, \"خطا در شروع دانلود: ${e.localizedMessage}\", Toast.LENGTH_SHORT).show()\n                  }\n              }\n          \n              private fun setupBackNavigation() {\n                  onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {\n                      override fun handleOnBackPressed() {\n                          if (errorLayout.visibility == View.VISIBLE && webView.canGoBack()) {\n                              hideErrorState()\n                              webView.goBack()\n                          } else if (webView.canGoBack()) {\n                              webView.goBack()\n                          } else {\n                              isEnabled = false\n                              onBackPressedDispatcher.onBackPressed()\n                          }\n                      }\n                  })\n              }\n          \n              private fun setupActivityLaunchers() {\n                  filePickerLauncher = registerForActivityResult(\n                      ActivityResultContracts.StartActivityForResult()\n                  ) { result ->\n                      val data = result.data\n                      var results: Array<Uri>? = null\n                      if (result.resultCode == RESULT_OK) {\n                          if (data != null && data.data != null) {\n                              results = arrayOf(data.data!!)\n                          } else if (cameraImageUri != null) {\n                              results = arrayOf(cameraImageUri!!)\n                          }\n                      }\n                      fileUploadCallback?.onReceiveValue(results)\n                      fileUploadCallback = null\n                  }\n              }\n          \n              private fun openFileSelector() {\n                  val galleryIntent = Intent(Intent.ACTION_GET_CONTENT).apply {\n                      addCategory(Intent.CATEGORY_OPENABLE)\n                      type = \"*/*\"\n                      putExtra(Intent.EXTRA_MIME_TYPES, arrayOf(\"image/*\", \"application/pdf\"))\n                  }\n          \n                  val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)\n                  if (cameraIntent.resolveActivity(packageManager) != null) {\n                      val photoFile: File? = try {\n                          createImageFile()\n                      } catch (ex: IOException) {\n                          null\n                      }\n                      if (photoFile != null) {\n                          cameraImageUri = FileProvider.getUriForFile(\n                              this,\n                              \"${applicationContext.packageName}.fileprovider\",\n                              photoFile\n                          )\n                          cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, cameraImageUri)\n                      }\n                  }\n          \n                  val chooser = Intent.createChooser(galleryIntent, \"انتخاب فایل یا عکس\")\n                  if (cameraIntent.resolveActivity(packageManager) != null && cameraImageUri != null) {\n                      chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(cameraIntent))\n                  }\n          \n                  filePickerLauncher.launch(chooser)\n              }\n          \n              @Throws(IOException::class)\n              private fun createImageFile(): File {\n                  val timeStamp = SimpleDateFormat(\"yyyyMMdd_HHmmss\", Locale.getDefault()).format(Date())\n                  val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)\n                  return File.createTempFile(\"JPEG_${timeStamp}_\", \".jpg\", storageDir)\n              }\n          \n              private fun setupNetworkMonitoring() {\n                  val connectivityManager =\n                      getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager\n                  val request = NetworkRequest.Builder()\n                      .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)\n                      .build()\n          \n                  connectivityManager.registerNetworkCallback(\n                      request,\n                      object : ConnectivityManager.NetworkCallback() {\n                          override fun onAvailable(network: Network) {\n                              runOnUiThread {\n                                  if (isOffline) {\n                                      isOffline = false\n                                      if (errorLayout.visibility == View.VISIBLE) {\n                                          hideErrorState()\n                                          webView.reload()\n                                      }\n                                  }\n                              }\n                          }\n          \n                          override fun onLost(network: Network) {\n                              runOnUiThread {\n                                  isOffline = true\n                              }\n                          }\n                      }\n                  )\n              }\n          \n              private fun isNetworkAvailable(): Boolean {\n                  val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager\n                  val activeNetwork = cm.activeNetwork ?: return false\n                  val caps = cm.getNetworkCapabilities(activeNetwork) ?: return false\n                  return caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)\n              }\n          \n              private fun loadTargetWebsite(url: String) {\n                  hideErrorState()\n                  webView.loadUrl(url)\n              }\n          \n              private fun showErrorState(title: String, desc: String) {\n                  tvErrorTitle.text = title\n                  tvErrorDesc.text = desc\n                  errorLayout.visibility = View.VISIBLE\n                  webView.visibility = View.GONE\n              }\n          \n              private fun hideErrorState() {\n                  errorLayout.visibility = View.GONE\n                  webView.visibility = View.VISIBLE\n              }\n          \n              private fun buildDynamicLayout(): View {\n                  val root = ConstraintLayout(this).apply {\n                      layoutParams = ConstraintLayout.LayoutParams(\n                          ConstraintLayout.LayoutParams.MATCH_PARENT,\n                          ConstraintLayout.LayoutParams.MATCH_PARENT\n                      )\n                  }\n          \n                  swipeRefresh = SwipeRefreshLayout(this).apply {\n                      id = View.generateViewId()\n                      layoutParams = ConstraintLayout.LayoutParams(\n                          ConstraintLayout.LayoutParams.MATCH_PARENT,\n                          ConstraintLayout.LayoutParams.MATCH_PARENT\n                      )\n                  }\n          \n                  webView = WebView(this).apply {\n                      id = View.generateViewId()\n                      layoutParams = LinearLayout.LayoutParams(\n                          LinearLayout.LayoutParams.MATCH_PARENT,\n                          LinearLayout.LayoutParams.MATCH_PARENT\n                      )\n                  }\n                  swipeRefresh.addView(webView)\n                  root.addView(swipeRefresh)\n          \n                  progressBar = ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal).apply {\n                      id = View.generateViewId()\n                      max = 100\n                      progressDrawable?.setTint(ContextCompat.getColor(this@MainActivity, R.color.accent))\n                      val lp = ConstraintLayout.LayoutParams(\n                          ConstraintLayout.LayoutParams.MATCH_PARENT,\n                          8\n                      )\n                      lp.topToTop = ConstraintLayout.LayoutParams.PARENT_ID\n                      layoutParams = lp\n                  }\n                  root.addView(progressBar)\n          \n                  errorLayout = LinearLayout(this).apply {\n                      id = View.generateViewId()\n                      orientation = LinearLayout.VERTICAL\n                      gravity = Gravity.CENTER\n                      setBackgroundColor(ContextCompat.getColor(this@MainActivity, R.color.background_light))\n                      visibility = View.GONE\n                      setPadding(48, 48, 48, 48)\n                      val lp = ConstraintLayout.LayoutParams(\n                          ConstraintLayout.LayoutParams.MATCH_PARENT,\n                          ConstraintLayout.LayoutParams.MATCH_PARENT\n                      )\n                      layoutParams = lp\n                  }\n          \n                  tvErrorTitle = TextView(this).apply {\n                      textSize = 20f\n                      setTextColor(ContextCompat.getColor(this@MainActivity, R.color.text_primary))\n                      gravity = Gravity.CENTER\n                      setPadding(0, 24, 0, 16)\n                  }\n                  errorLayout.addView(tvErrorTitle)\n          \n                  tvErrorDesc = TextView(this).apply {\n                      textSize = 14f\n                      setTextColor(ContextCompat.getColor(this@MainActivity, R.color.text_secondary))\n                      gravity = Gravity.CENTER\n                      setPadding(0, 0, 0, 32)\n                  }\n                  errorLayout.addView(tvErrorDesc)\n          \n                  btnRetry = Button(this).apply {\n                      text = getString(R.string.btn_retry)\n                      setBackgroundColor(ContextCompat.getColor(this@MainActivity, R.color.primary))\n                      setTextColor(ContextCompat.getColor(this@MainActivity, R.color.surface))\n                  }\n                  errorLayout.addView(btnRetry)\n          \n                  root.addView(errorLayout)\n                  return root\n              }\n          \n              override fun onResume() {\n                  super.onResume()\n                  webView.onResume()\n                  CookieManager.getInstance().flush()\n              }\n          \n              override fun onPause() {\n                  super.onPause()\n                  webView.onPause()\n                  CookieManager.getInstance().flush()\n              }\n          \n              override fun onDestroy() {\n                  webView.destroy()\n                  super.onDestroy()\n              }\n          }\n          EOF\n\n      - name: Build Android Debug APK\n        working-directory: src-tauri/gen/android\n        run: |\n          gradle assembleDebug --stacktrace\n\n      - name: Build Android Release APK\n        working-directory: src-tauri/gen/android\n        run: |\n          gradle assembleRelease --stacktrace\n\n      - name: Upload Sorna Debug APK Artifact\n        uses: actions/upload-artifact@v4\n        with:\n          name: sorna-debug-apk\n          path: src-tauri/gen/android/app/build/outputs/apk/debug/*.apk\n\n      - name: Upload Sorna Release APK Artifact\n        uses: actions/upload-artifact@v4\n        with:\n          name: sorna-release-apk\n          path: src-tauri/gen/android/app/build/outputs/apk/release/*.apk\n";
 
 export const PROJECT_FILES: ProjectFile[] = [
   {
-    path: '.github/workflows/build-apk.yml',
-    name: 'build-apk.yml',
-    category: 'ci',
-    language: 'yaml',
-    description: 'اکشن گیت‌هاب خودترمیم‌گر (بدون وابستگی به package-lock.json و همراه با ساخت خودکار تمام منابع اندروید)',
-    content: GITHUB_WORKFLOW_YML,
+    "path": ".github/workflows/build-apk.yml",
+    "name": "build-apk.yml",
+    "category": "ci",
+    "language": "yaml",
+    "description": "ورک‌فلو گیت‌هاب اکشنز گروه آموزشی سورنا (حاوی لوگوی رسمی SORNA و ساخت خودکار APK)",
+    "content": "name: Build Sorna Educational Group Android APK\n\non:\n  push:\n    branches: [ \"main\", \"master\" ]\n  workflow_dispatch:\n\njobs:\n  build-apk:\n    name: Build Android APK (Sorna Educational Group)\n    runs-on: ubuntu-latest\n\n    steps:\n      - name: Checkout Repository\n        uses: actions/checkout@v4\n\n      - name: Setup Java JDK 17\n        uses: actions/setup-java@v4\n        with:\n          distribution: 'temurin'\n          java-version: '17'\n\n      - name: Accept Android SDK Licenses\n        run: |\n          echo \"Using Android SDK at: $ANDROID_HOME\"\n          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true\n\n      - name: Setup Gradle 8.5\n        uses: gradle/actions/setup-gradle@v3\n        with:\n          gradle-version: '8.5'\n\n      - name: Verify & Prepare Sorna Android Project Structure\n        run: |\n          rm -rf src-tauri/gen/android/app/src/main/java/com\n          rm -rf src-tauri/gen/android/app/src/main/res/drawable\n          mkdir -p src-tauri/gen/android/app/src/main/java/ir/sornac/app\n          mkdir -p src-tauri/gen/android/app/src/main/res/drawable-nodpi\n          mkdir -p src-tauri/gen/android/app/src/main/res/mipmap-anydpi-v26\n          mkdir -p src-tauri/gen/android/app/src/main/res/values\n          mkdir -p src-tauri/gen/android/app/src/main/res/xml\n\n          base64 -d << 'EOF' > src-tauri/gen/android/app/src/main/res/drawable-nodpi/ic_launcher_logo.png\n          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\n          t6JAmxeNAAAAAElFTkSuQmCC\n          EOF\n\n          cat << 'EOF' > src-tauri/gen/android/settings.gradle.kts\n          pluginManagement {\n              repositories {\n                  google()\n                  mavenCentral()\n                  gradlePluginPortal()\n              }\n          }\n          dependencyResolutionManagement {\n              repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)\n              repositories {\n                  google()\n                  mavenCentral()\n              }\n          }\n          \n          rootProject.name = \"SornaApp\"\n          include(\":app\")\n          EOF\n\n          cat << 'EOF' > src-tauri/gen/android/build.gradle.kts\n          // Top-level build file where you can add configuration options common to all sub-projects/modules.\n          plugins {\n              id(\"com.android.application\") version \"8.3.2\" apply false\n              id(\"org.jetbrains.kotlin.android\") version \"1.9.23\" apply false\n          }\n          \n          tasks.register(\"clean\", Delete::class) {\n              delete(rootProject.layout.buildDirectory)\n          }\n          EOF\n\n          cat << 'EOF' > src-tauri/gen/android/gradle.properties\n          org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8\n          android.useAndroidX=true\n          android.nonTransitiveRClass=true\n          kotlin.code.style=official\n          EOF\n\n          cat << 'EOF' > src-tauri/gen/android/app/build.gradle.kts\n          plugins {\n              id(\"com.android.application\")\n              id(\"org.jetbrains.kotlin.android\")\n          }\n          \n          android {\n              namespace = \"ir.sornac.app\"\n              compileSdk = 34\n          \n              defaultConfig {\n                  applicationId = \"ir.sornac.app\"\n                  minSdk = 26\n                  targetSdk = 34\n                  versionCode = 1\n                  versionName = \"1.0.0\"\n          \n                  testInstrumentationRunner = \"androidx.test.runner.AndroidJUnitRunner\"\n                  vectorDrawables {\n                      useSupportLibrary = true\n                  }\n          \n                  manifestPlaceholders[\"appLabel\"] = \"گروه آموزشی سورنا\"\n              }\n          \n              buildTypes {\n                  release {\n                      isMinifyEnabled = false\n                      isShrinkResources = false\n                      proguardFiles(\n                          getDefaultProguardFile(\"proguard-android-optimize.txt\"),\n                          \"proguard-rules.pro\"\n                      )\n                      signingConfig = signingConfigs.getByName(\"debug\")\n                  }\n                  debug {\n                      applicationIdSuffix = \".debug\"\n                      isDebuggable = true\n                  }\n              }\n          \n              compileOptions {\n                  sourceCompatibility = JavaVersion.VERSION_17\n                  targetCompatibility = JavaVersion.VERSION_17\n              }\n          \n              kotlinOptions {\n                  jvmTarget = \"17\"\n              }\n          \n              buildFeatures {\n                  viewBinding = true\n                  buildConfig = true\n              }\n          }\n          \n          dependencies {\n              implementation(\"androidx.core:core-ktx:1.12.0\")\n              implementation(\"androidx.appcompat:appcompat:1.6.1\")\n              implementation(\"com.google.android.material:material:1.11.0\")\n              implementation(\"androidx.constraintlayout:constraintlayout:2.1.4\")\n              implementation(\"androidx.webkit:webkit:1.10.0\")\n              implementation(\"androidx.swiperefreshlayout:swiperefreshlayout:1.1.0\")\n              implementation(\"androidx.activity:activity-ktx:1.8.2\")\n          }\n          EOF\n\n          cat << 'EOF' > src-tauri/gen/android/app/proguard-rules.pro\n          # Proguard rules for Sorna Educational Group Android App\n          -keepclassmembers class * {\n              @android.webkit.JavascriptInterface <methods>;\n          }\n          \n          -keep class ir.sornac.app.** { *; }\n          -dontwarn ir.sornac.app.**\n          \n          -keep public class android.webkit.** { *; }\n          EOF\n\n          cat << 'EOF' > src-tauri/gen/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml\n          <?xml version=\"1.0\" encoding=\"utf-8\"?>\n          <adaptive-icon xmlns:android=\"http://schemas.android.com/apk/res/android\">\n              <background android:drawable=\"@color/surface\" />\n              <foreground>\n                  <inset\n                      android:drawable=\"@drawable/ic_launcher_logo\"\n                      android:inset=\"14%\" />\n              </foreground>\n          </adaptive-icon>\n          EOF\n\n          cat << 'EOF' > src-tauri/gen/android/app/src/main/res/values/strings.xml\n          <resources>\n              <string name=\"app_name\">گروه آموزشی سورنا</string>\n              <string name=\"app_name_en\">Sorna Educational Group</string>\n              <string name=\"website_url\">https://sornac.ir/</string>\n              <string name=\"error_no_internet_title\">عدم دسترسی به اینترنت</string>\n              <string name=\"error_no_internet_msg\">اتصال دستگاه شما به اینترنت قطع شده است. لطفاً وضعیت وای‌فای یا دیتای سیم‌کارت را بررسی نمایید.</string>\n              <string name=\"error_server_title\">خطا در بارگذاری سامانه سورنا</string>\n              <string name=\"error_server_msg\">امکان اتصال به سرورهای گروه آموزشی سورنا فراهم نشد. لطفاً چند لحظه دیگر دوباره تلاش نمایید.</string>\n              <string name=\"btn_retry\">تلاش مجدد</string>\n              <string name=\"btn_check_network\">تنظیمات شبکه</string>\n              <string name=\"download_started\">شروع دریافت فایل آموزشی…</string>\n              <string name=\"download_completed\">دریافت فایل با موفقیت انجام شد</string>\n          </resources>\n          EOF\n\n          cat << 'EOF' > src-tauri/gen/android/app/src/main/res/values/colors.xml\n          <?xml version=\"1.0\" encoding=\"utf-8\"?>\n          <resources>\n              <color name=\"primary\">#001F54</color>\n              <color name=\"primary_dark\">#001538</color>\n              <color name=\"primary_light\">#1E3A8A</color>\n              <color name=\"accent\">#EEA83B</color>\n              <color name=\"background_light\">#F8FAFC</color>\n              <color name=\"background_dark\">#001538</color>\n              <color name=\"surface\">#FFFFFF</color>\n              <color name=\"text_primary\">#001F54</color>\n              <color name=\"text_secondary\">#475569</color>\n              <color name=\"status_bar_color\">#001F54</color>\n          </resources>\n          EOF\n\n          cat << 'EOF' > src-tauri/gen/android/app/src/main/res/values/styles.xml\n          <resources>\n              <style name=\"Theme.Sorna\" parent=\"Theme.MaterialComponents.DayNight.NoActionBar\">\n                  <item name=\"colorPrimary\">@color/primary</item>\n                  <item name=\"colorPrimaryVariant\">@color/primary_dark</item>\n                  <item name=\"colorOnPrimary\">@color/surface</item>\n                  <item name=\"colorSecondary\">@color/accent</item>\n                  <item name=\"android:statusBarColor\">@color/status_bar_color</item>\n                  <item name=\"android:windowLightStatusBar\">false</item>\n                  <item name=\"android:navigationBarColor\">@color/background_dark</item>\n              </style>\n          </resources>\n          EOF\n\n          cat << 'EOF' > src-tauri/gen/android/app/src/main/res/xml/network_security_config.xml\n          <?xml version=\"1.0\" encoding=\"utf-8\"?>\n          <network-security-config>\n              <domain-config cleartextTrafficPermitted=\"false\">\n                  <domain includeSubdomains=\"true\">sornac.ir</domain>\n                  <trust-anchors>\n                      <certificates src=\"system\" />\n                      <certificates src=\"user\" />\n                  </trust-anchors>\n              </domain-config>\n          \n              <base-config cleartextTrafficPermitted=\"false\">\n                  <trust-anchors>\n                      <certificates src=\"system\" />\n                  </trust-anchors>\n              </base-config>\n          </network-security-config>\n          EOF\n\n          cat << 'EOF' > src-tauri/gen/android/app/src/main/res/xml/file_paths.xml\n          <?xml version=\"1.0\" encoding=\"utf-8\"?>\n          <paths>\n              <external-files-path name=\"my_images\" path=\"Pictures\" />\n              <external-cache-path name=\"cached_images\" path=\"/\" />\n              <cache-path name=\"internal_cache\" path=\"/\" />\n          </paths>\n          EOF\n\n          cat << 'EOF' > src-tauri/gen/android/app/src/main/AndroidManifest.xml\n          <?xml version=\"1.0\" encoding=\"utf-8\"?>\n          <manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\n              xmlns:tools=\"http://schemas.android.com/tools\">\n          \n              <uses-permission android:name=\"android.permission.INTERNET\" />\n              <uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\" />\n              <uses-permission android:name=\"android.permission.CAMERA\" />\n              <uses-feature android:name=\"android.hardware.camera\" android:required=\"false\" />\n              <uses-permission android:name=\"android.permission.READ_EXTERNAL_STORAGE\" android:maxSdkVersion=\"32\" />\n              <uses-permission android:name=\"android.permission.READ_MEDIA_IMAGES\" />\n              <uses-permission android:name=\"android.permission.POST_NOTIFICATIONS\" />\n          \n              <application\n                  android:allowBackup=\"true\"\n                  android:icon=\"@mipmap/ic_launcher\"\n                  android:label=\"@string/app_name\"\n                  android:roundIcon=\"@mipmap/ic_launcher\"\n                  android:supportsRtl=\"true\"\n                  android:theme=\"@style/Theme.Sorna\"\n                  android:networkSecurityConfig=\"@xml/network_security_config\"\n                  android:usesCleartextTraffic=\"false\"\n                  tools:targetApi=\"34\">\n          \n                  <activity\n                      android:name=\".MainActivity\"\n                      android:exported=\"true\"\n                      android:launchMode=\"singleTask\"\n                      android:configChanges=\"orientation|screenSize|screenLayout|keyboardHidden|smallestScreenSize\"\n                      android:windowSoftInputMode=\"adjustResize\">\n          \n                      <intent-filter>\n                          <action android:name=\"android.intent.action.MAIN\" />\n                          <category android:name=\"android.intent.category.LAUNCHER\" />\n                      </intent-filter>\n          \n                      <intent-filter android:autoVerify=\"true\">\n                          <action android:name=\"android.intent.action.VIEW\" />\n                          <category android:name=\"android.intent.category.DEFAULT\" />\n                          <category android:name=\"android.intent.category.BROWSABLE\" />\n                          <data\n                              android:scheme=\"https\"\n                              android:host=\"sornac.ir\" />\n                          <data\n                              android:scheme=\"https\"\n                              android:host=\"*.sornac.ir\" />\n                      </intent-filter>\n                  </activity>\n          \n                  <provider\n                      android:name=\"androidx.core.content.FileProvider\"\n                      android:authorities=\"${applicationId}.fileprovider\"\n                      android:exported=\"false\"\n                      android:grantUriPermissions=\"true\">\n                      <meta-data\n                          android:name=\"android.support.FILE_PROVIDER_PATHS\"\n                          android:resource=\"@xml/file_paths\" />\n                  </provider>\n          \n              </application>\n          \n          </manifest>\n          EOF\n\n          cat << 'EOF' > src-tauri/gen/android/app/src/main/java/ir/sornac/app/MainActivity.kt\n          package ir.sornac.app\n          \n          import android.annotation.SuppressLint\n          import android.app.DownloadManager\n          import android.content.Context\n          import android.content.Intent\n          import android.graphics.Bitmap\n          import android.net.ConnectivityManager\n          import android.net.Network\n          import android.net.NetworkCapabilities\n          import android.net.NetworkRequest\n          import android.net.Uri\n          import android.os.Bundle\n          import android.os.Environment\n          import android.provider.MediaStore\n          import android.view.Gravity\n          import android.view.View\n          import android.webkit.CookieManager\n          import android.webkit.URLUtil\n          import android.webkit.ValueCallback\n          import android.webkit.WebChromeClient\n          import android.webkit.WebResourceError\n          import android.webkit.WebResourceRequest\n          import android.webkit.WebSettings\n          import android.webkit.WebView\n          import android.webkit.WebViewClient\n          import android.widget.Button\n          import android.widget.LinearLayout\n          import android.widget.ProgressBar\n          import android.widget.TextView\n          import android.widget.Toast\n          import androidx.activity.OnBackPressedCallback\n          import androidx.activity.result.ActivityResultLauncher\n          import androidx.activity.result.contract.ActivityResultContracts\n          import androidx.appcompat.app.AppCompatActivity\n          import androidx.constraintlayout.widget.ConstraintLayout\n          import androidx.core.content.ContextCompat\n          import androidx.core.content.FileProvider\n          import androidx.swiperefreshlayout.widget.SwipeRefreshLayout\n          import java.io.File\n          import java.io.IOException\n          import java.text.SimpleDateFormat\n          import java.util.Date\n          import java.util.Locale\n          \n          class MainActivity : AppCompatActivity() {\n          \n              private lateinit var webView: WebView\n              private lateinit var progressBar: ProgressBar\n              private lateinit var swipeRefresh: SwipeRefreshLayout\n              private lateinit var errorLayout: LinearLayout\n              private lateinit var btnRetry: Button\n              private lateinit var tvErrorTitle: TextView\n              private lateinit var tvErrorDesc: TextView\n          \n              private var fileUploadCallback: ValueCallback<Array<Uri>>? = null\n              private var cameraImageUri: Uri? = null\n          \n              private lateinit var filePickerLauncher: ActivityResultLauncher<Intent>\n          \n              private val targetUrl = \"https://sornac.ir/\"\n              private var isOffline = false\n          \n              override fun onCreate(savedInstanceState: Bundle?) {\n                  super.onCreate(savedInstanceState)\n                  setContentView(buildDynamicLayout())\n          \n                  setupActivityLaunchers()\n                  setupWebView()\n                  setupBackNavigation()\n                  setupNetworkMonitoring()\n          \n                  if (isNetworkAvailable()) {\n                      loadTargetWebsite(targetUrl)\n                  } else {\n                      showErrorState(\n                          getString(R.string.error_no_internet_title),\n                          getString(R.string.error_no_internet_msg)\n                      )\n                  }\n              }\n          \n              @SuppressLint(\"SetJavaScriptEnabled\")\n              private fun setupWebView() {\n                  val settings = webView.settings\n                  settings.apply {\n                      javaScriptEnabled = true\n                      domStorageEnabled = true\n                      databaseEnabled = true\n                      allowFileAccess = true\n                      allowContentAccess = true\n                      loadWithOverviewMode = true\n                      useWideViewPort = true\n                      setSupportZoom(true)\n                      builtInZoomControls = true\n                      displayZoomControls = false\n                      cacheMode = WebSettings.LOAD_DEFAULT\n                      mediaPlaybackRequiresUserGesture = false\n                      mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW\n                      userAgentString = \"${settings.userAgentString ?: \"\"} SornaAndroidApp/1.0.0\"\n                  }\n          \n                  val cookieManager = CookieManager.getInstance()\n                  cookieManager.setAcceptCookie(true)\n                  cookieManager.setAcceptThirdPartyCookies(webView, true)\n          \n                  swipeRefresh.setColorSchemeResources(R.color.primary)\n                  swipeRefresh.setOnRefreshListener {\n                      if (isNetworkAvailable()) {\n                          hideErrorState()\n                          webView.reload()\n                      } else {\n                          swipeRefresh.isRefreshing = false\n                          showErrorState(\n                              getString(R.string.error_no_internet_title),\n                              getString(R.string.error_no_internet_msg)\n                          )\n                      }\n                  }\n          \n                  webView.webViewClient = object : WebViewClient() {\n                      override fun shouldOverrideUrlLoading(\n                          view: WebView?,\n                          request: WebResourceRequest?\n                      ): Boolean {\n                          val url = request?.url?.toString() ?: return false\n                          return handleUrlNavigation(url)\n                      }\n          \n                      override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {\n                          super.onPageStarted(view, url, favicon)\n                          progressBar.visibility = View.VISIBLE\n                      }\n          \n                      override fun onPageFinished(view: WebView?, url: String?) {\n                          super.onPageFinished(view, url)\n                          progressBar.visibility = View.GONE\n                          swipeRefresh.isRefreshing = false\n                          CookieManager.getInstance().flush()\n                      }\n          \n                      override fun onReceivedError(\n                          view: WebView?,\n                          request: WebResourceRequest?,\n                          error: WebResourceError?\n                      ) {\n                          super.onReceivedError(view, request, error)\n                          if (request?.isForMainFrame == true) {\n                              progressBar.visibility = View.GONE\n                              swipeRefresh.isRefreshing = false\n                              showErrorState(\n                                  getString(R.string.error_server_title),\n                                  getString(R.string.error_server_msg)\n                              )\n                          }\n                      }\n                  }\n          \n                  webView.webChromeClient = object : WebChromeClient() {\n                      override fun onProgressChanged(view: WebView?, newProgress: Int) {\n                          super.onProgressChanged(view, newProgress)\n                          progressBar.progress = newProgress\n                          if (newProgress == 100) {\n                              progressBar.visibility = View.GONE\n                          }\n                      }\n          \n                      override fun onShowFileChooser(\n                          webView: WebView?,\n                          filePathCallback: ValueCallback<Array<Uri>>?,\n                          fileChooserParams: FileChooserParams?\n                      ): Boolean {\n                          fileUploadCallback?.onReceiveValue(null)\n                          fileUploadCallback = filePathCallback\n                          openFileSelector()\n                          return true\n                      }\n                  }\n          \n                  webView.setDownloadListener { url, userAgent, contentDisposition, mimetype, _ ->\n                      handleDownload(url, userAgent, contentDisposition, mimetype)\n                  }\n          \n                  btnRetry.setOnClickListener {\n                      if (isNetworkAvailable()) {\n                          hideErrorState()\n                          progressBar.visibility = View.VISIBLE\n                          webView.reload()\n                      } else {\n                          Toast.makeText(\n                              this,\n                              R.string.error_no_internet_msg,\n                              Toast.LENGTH_SHORT\n                          ).show()\n                      }\n                  }\n              }\n          \n              private fun handleUrlNavigation(url: String): Boolean {\n                  val uri = Uri.parse(url)\n                  val host = uri.host?.lowercase(Locale.ROOT) ?: \"\"\n          \n                  if (url.startsWith(\"tel:\") || url.startsWith(\"mailto:\") ||\n                      url.startsWith(\"sms:\") || url.startsWith(\"whatsapp:\") ||\n                      url.startsWith(\"tg:\")\n                  ) {\n                      try {\n                          startActivity(Intent(Intent.ACTION_VIEW, uri))\n                      } catch (e: Exception) {\n                          Toast.makeText(this, \"برنامه‌ای برای باز کردن این پیوند یافت نشد\", Toast.LENGTH_SHORT).show()\n                      }\n                      return true\n                  }\n          \n                  val isBankingGateway = host.endsWith(\"shaparak.ir\") ||\n                          host.contains(\"zarinpal.com\") ||\n                          host.contains(\"idpay.ir\") ||\n                          host.contains(\"pay.ir\") ||\n                          host.contains(\"nextpay.org\") ||\n                          host.contains(\"sadadpsp.ir\") ||\n                          host.contains(\"asanpardakht.ir\")\n          \n                  val isInternalDomain = host == \"sornac.ir\" || host.endsWith(\".sornac.ir\")\n          \n                  return if (isInternalDomain || isBankingGateway) {\n                      false\n                  } else {\n                      try {\n                          val intent = Intent(Intent.ACTION_VIEW, uri)\n                          startActivity(intent)\n                      } catch (e: Exception) {\n                      }\n                      true\n                  }\n              }\n          \n              private fun handleDownload(\n                  url: String?,\n                  userAgent: String?,\n                  contentDisposition: String?,\n                  mimeType: String?\n              ) {\n                  if (url.isNullOrEmpty()) return\n                  try {\n                      val request = DownloadManager.Request(Uri.parse(url))\n                      val filename = URLUtil.guessFileName(url, contentDisposition, mimeType)\n          \n                      val cookies = CookieManager.getInstance().getCookie(url)\n                      if (!cookies.isNullOrEmpty()) {\n                          request.addRequestHeader(\"cookie\", cookies)\n                      }\n                      if (!userAgent.isNullOrEmpty()) {\n                          request.addRequestHeader(\"User-Agent\", userAgent)\n                      }\n                      request.setDescription(getString(R.string.download_started))\n                      request.setTitle(filename)\n                      request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)\n                      request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, filename)\n          \n                      val dm = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager\n                      dm.enqueue(request)\n          \n                      Toast.makeText(this, getString(R.string.download_started), Toast.LENGTH_SHORT).show()\n                  } catch (e: Exception) {\n                      Toast.makeText(this, \"خطا در شروع دانلود: ${e.localizedMessage}\", Toast.LENGTH_SHORT).show()\n                  }\n              }\n          \n              private fun setupBackNavigation() {\n                  onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {\n                      override fun handleOnBackPressed() {\n                          if (errorLayout.visibility == View.VISIBLE && webView.canGoBack()) {\n                              hideErrorState()\n                              webView.goBack()\n                          } else if (webView.canGoBack()) {\n                              webView.goBack()\n                          } else {\n                              isEnabled = false\n                              onBackPressedDispatcher.onBackPressed()\n                          }\n                      }\n                  })\n              }\n          \n              private fun setupActivityLaunchers() {\n                  filePickerLauncher = registerForActivityResult(\n                      ActivityResultContracts.StartActivityForResult()\n                  ) { result ->\n                      val data = result.data\n                      var results: Array<Uri>? = null\n                      if (result.resultCode == RESULT_OK) {\n                          if (data != null && data.data != null) {\n                              results = arrayOf(data.data!!)\n                          } else if (cameraImageUri != null) {\n                              results = arrayOf(cameraImageUri!!)\n                          }\n                      }\n                      fileUploadCallback?.onReceiveValue(results)\n                      fileUploadCallback = null\n                  }\n              }\n          \n              private fun openFileSelector() {\n                  val galleryIntent = Intent(Intent.ACTION_GET_CONTENT).apply {\n                      addCategory(Intent.CATEGORY_OPENABLE)\n                      type = \"*/*\"\n                      putExtra(Intent.EXTRA_MIME_TYPES, arrayOf(\"image/*\", \"application/pdf\"))\n                  }\n          \n                  val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)\n                  if (cameraIntent.resolveActivity(packageManager) != null) {\n                      val photoFile: File? = try {\n                          createImageFile()\n                      } catch (ex: IOException) {\n                          null\n                      }\n                      if (photoFile != null) {\n                          cameraImageUri = FileProvider.getUriForFile(\n                              this,\n                              \"${applicationContext.packageName}.fileprovider\",\n                              photoFile\n                          )\n                          cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, cameraImageUri)\n                      }\n                  }\n          \n                  val chooser = Intent.createChooser(galleryIntent, \"انتخاب فایل یا عکس\")\n                  if (cameraIntent.resolveActivity(packageManager) != null && cameraImageUri != null) {\n                      chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(cameraIntent))\n                  }\n          \n                  filePickerLauncher.launch(chooser)\n              }\n          \n              @Throws(IOException::class)\n              private fun createImageFile(): File {\n                  val timeStamp = SimpleDateFormat(\"yyyyMMdd_HHmmss\", Locale.getDefault()).format(Date())\n                  val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)\n                  return File.createTempFile(\"JPEG_${timeStamp}_\", \".jpg\", storageDir)\n              }\n          \n              private fun setupNetworkMonitoring() {\n                  val connectivityManager =\n                      getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager\n                  val request = NetworkRequest.Builder()\n                      .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)\n                      .build()\n          \n                  connectivityManager.registerNetworkCallback(\n                      request,\n                      object : ConnectivityManager.NetworkCallback() {\n                          override fun onAvailable(network: Network) {\n                              runOnUiThread {\n                                  if (isOffline) {\n                                      isOffline = false\n                                      if (errorLayout.visibility == View.VISIBLE) {\n                                          hideErrorState()\n                                          webView.reload()\n                                      }\n                                  }\n                              }\n                          }\n          \n                          override fun onLost(network: Network) {\n                              runOnUiThread {\n                                  isOffline = true\n                              }\n                          }\n                      }\n                  )\n              }\n          \n              private fun isNetworkAvailable(): Boolean {\n                  val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager\n                  val activeNetwork = cm.activeNetwork ?: return false\n                  val caps = cm.getNetworkCapabilities(activeNetwork) ?: return false\n                  return caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)\n              }\n          \n              private fun loadTargetWebsite(url: String) {\n                  hideErrorState()\n                  webView.loadUrl(url)\n              }\n          \n              private fun showErrorState(title: String, desc: String) {\n                  tvErrorTitle.text = title\n                  tvErrorDesc.text = desc\n                  errorLayout.visibility = View.VISIBLE\n                  webView.visibility = View.GONE\n              }\n          \n              private fun hideErrorState() {\n                  errorLayout.visibility = View.GONE\n                  webView.visibility = View.VISIBLE\n              }\n          \n              private fun buildDynamicLayout(): View {\n                  val root = ConstraintLayout(this).apply {\n                      layoutParams = ConstraintLayout.LayoutParams(\n                          ConstraintLayout.LayoutParams.MATCH_PARENT,\n                          ConstraintLayout.LayoutParams.MATCH_PARENT\n                      )\n                  }\n          \n                  swipeRefresh = SwipeRefreshLayout(this).apply {\n                      id = View.generateViewId()\n                      layoutParams = ConstraintLayout.LayoutParams(\n                          ConstraintLayout.LayoutParams.MATCH_PARENT,\n                          ConstraintLayout.LayoutParams.MATCH_PARENT\n                      )\n                  }\n          \n                  webView = WebView(this).apply {\n                      id = View.generateViewId()\n                      layoutParams = LinearLayout.LayoutParams(\n                          LinearLayout.LayoutParams.MATCH_PARENT,\n                          LinearLayout.LayoutParams.MATCH_PARENT\n                      )\n                  }\n                  swipeRefresh.addView(webView)\n                  root.addView(swipeRefresh)\n          \n                  progressBar = ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal).apply {\n                      id = View.generateViewId()\n                      max = 100\n                      progressDrawable?.setTint(ContextCompat.getColor(this@MainActivity, R.color.accent))\n                      val lp = ConstraintLayout.LayoutParams(\n                          ConstraintLayout.LayoutParams.MATCH_PARENT,\n                          8\n                      )\n                      lp.topToTop = ConstraintLayout.LayoutParams.PARENT_ID\n                      layoutParams = lp\n                  }\n                  root.addView(progressBar)\n          \n                  errorLayout = LinearLayout(this).apply {\n                      id = View.generateViewId()\n                      orientation = LinearLayout.VERTICAL\n                      gravity = Gravity.CENTER\n                      setBackgroundColor(ContextCompat.getColor(this@MainActivity, R.color.background_light))\n                      visibility = View.GONE\n                      setPadding(48, 48, 48, 48)\n                      val lp = ConstraintLayout.LayoutParams(\n                          ConstraintLayout.LayoutParams.MATCH_PARENT,\n                          ConstraintLayout.LayoutParams.MATCH_PARENT\n                      )\n                      layoutParams = lp\n                  }\n          \n                  tvErrorTitle = TextView(this).apply {\n                      textSize = 20f\n                      setTextColor(ContextCompat.getColor(this@MainActivity, R.color.text_primary))\n                      gravity = Gravity.CENTER\n                      setPadding(0, 24, 0, 16)\n                  }\n                  errorLayout.addView(tvErrorTitle)\n          \n                  tvErrorDesc = TextView(this).apply {\n                      textSize = 14f\n                      setTextColor(ContextCompat.getColor(this@MainActivity, R.color.text_secondary))\n                      gravity = Gravity.CENTER\n                      setPadding(0, 0, 0, 32)\n                  }\n                  errorLayout.addView(tvErrorDesc)\n          \n                  btnRetry = Button(this).apply {\n                      text = getString(R.string.btn_retry)\n                      setBackgroundColor(ContextCompat.getColor(this@MainActivity, R.color.primary))\n                      setTextColor(ContextCompat.getColor(this@MainActivity, R.color.surface))\n                  }\n                  errorLayout.addView(btnRetry)\n          \n                  root.addView(errorLayout)\n                  return root\n              }\n          \n              override fun onResume() {\n                  super.onResume()\n                  webView.onResume()\n                  CookieManager.getInstance().flush()\n              }\n          \n              override fun onPause() {\n                  super.onPause()\n                  webView.onPause()\n                  CookieManager.getInstance().flush()\n              }\n          \n              override fun onDestroy() {\n                  webView.destroy()\n                  super.onDestroy()\n              }\n          }\n          EOF\n\n      - name: Build Android Debug APK\n        working-directory: src-tauri/gen/android\n        run: |\n          gradle assembleDebug --stacktrace\n\n      - name: Build Android Release APK\n        working-directory: src-tauri/gen/android\n        run: |\n          gradle assembleRelease --stacktrace\n\n      - name: Upload Sorna Debug APK Artifact\n        uses: actions/upload-artifact@v4\n        with:\n          name: sorna-debug-apk\n          path: src-tauri/gen/android/app/build/outputs/apk/debug/*.apk\n\n      - name: Upload Sorna Release APK Artifact\n        uses: actions/upload-artifact@v4\n        with:\n          name: sorna-release-apk\n          path: src-tauri/gen/android/app/build/outputs/apk/release/*.apk\n"
   },
   {
-    path: 'src-tauri/tauri.conf.json',
-    name: 'tauri.conf.json',
-    category: 'tauri',
-    language: 'json',
-    description: 'پیکربندی هسته توری ۲، آدرس سایت amvajsarmad.com، پکیج آیدی و مجوزهای اندروید',
-    content: `{
-  "$schema": "https://schema.tauri.app/config/2",
-  "productName": "Amvaj Sarmad",
-  "version": "1.0.0",
-  "identifier": "com.amvajsarmad.app",
-  "build": {
-    "beforeDevCommand": "",
-    "beforeBuildCommand": "",
-    "frontendDist": "../dist"
-  },
-  "app": {
-    "withGlobalTauri": false,
-    "security": {
-      "csp": null
-    },
-    "windows": [
-      {
-        "title": "Amvaj Sarmad",
-        "url": "https://amvajsarmad.com",
-        "userAgent": "Mozilla/5.0 (Linux; Android 14; Mobile; AmvajSarmadApp/1.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36",
-        "fullscreen": false,
-        "resizable": true,
-        "transparent": false,
-        "zoomHotkeysEnabled": false
-      }
-    ]
-  },
-  "bundle": {
-    "active": true,
-    "targets": "all",
-    "icon": [
-      "icons/32x32.png",
-      "icons/128x128.png",
-      "icons/128x128@2x.png",
-      "icons/icon.icns",
-      "icons/icon.ico"
-    ],
-    "android": {
-      "vulkan": false,
-      "minSdkVersion": 26,
-      "targetSdkVersion": 34,
-      "compileSdkVersion": 34
-    }
-  },
-  "plugins": {
-    "opener": {
-      "default": "system"
-    }
-  }
-}`
+    "path": "src-tauri/tauri.conf.json",
+    "name": "tauri.conf.json",
+    "category": "tauri",
+    "language": "json",
+    "description": "پیکربندی هسته توری ۲ برای گروه آموزشی سورنا (https://sornac.ir/) و پکیج ir.sornac.app",
+    "content": "{\n  \"$schema\": \"https://schema.tauri.app/config/2\",\n  \"productName\": \"گروه آموزشی سورنا\",\n  \"version\": \"1.0.0\",\n  \"identifier\": \"ir.sornac.app\",\n  \"build\": {\n    \"beforeDevCommand\": \"\",\n    \"beforeBuildCommand\": \"\",\n    \"frontendDist\": \"../dist\"\n  },\n  \"app\": {\n    \"withGlobalTauri\": false,\n    \"security\": {\n      \"csp\": null\n    },\n    \"windows\": [\n      {\n        \"title\": \"گروه آموزشی سورنا\",\n        \"url\": \"https://sornac.ir/\",\n        \"userAgent\": \"Mozilla/5.0 (Linux; Android 14; Mobile; SornaApp/1.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36\",\n        \"fullscreen\": false,\n        \"resizable\": true,\n        \"transparent\": false,\n        \"zoomHotkeysEnabled\": false\n      }\n    ]\n  },\n  \"bundle\": {\n    \"active\": true,\n    \"targets\": \"all\",\n    \"icon\": [\n      \"icons/32x32.png\",\n      \"icons/128x128.png\",\n      \"icons/128x128@2x.png\",\n      \"icons/icon.icns\",\n      \"icons/icon.ico\"\n    ],\n    \"android\": {\n      \"vulkan\": false,\n      \"minSdkVersion\": 26,\n      \"targetSdkVersion\": 34,\n      \"compileSdkVersion\": 34\n    }\n  },\n  \"plugins\": {\n    \"opener\": {\n      \"default\": \"system\"\n    }\n  }\n}\n"
   },
   {
-    path: 'src-tauri/Cargo.toml',
-    name: 'Cargo.toml',
-    category: 'rust',
-    language: 'toml',
-    description: 'وابستگی‌های راست (Rust Crate)، کتابخانه‌های Tauri 2 و افزونه‌های بومی',
-    content: `[package]
-name = "amvaj-sarmad-app"
-version = "1.0.0"
-description = "Amvaj Sarmad Android Mobile Application (Tauri 2 + WebView)"
-authors = ["Amvaj Sarmad Engineering <dev@amvajsarmad.com>"]
-edition = "2021"
-default-run = "amvaj-sarmad-app"
-
-[lib]
-name = "amvaj_sarmad_lib"
-crate-type = ["staticlib", "cdylib", "rlib"]
-
-[build-dependencies]
-tauri-build = { version = "2.0.0", features = [] }
-
-[dependencies]
-tauri = { version = "2.0.0", features = [] }
-tauri-plugin-opener = "2.0.0"
-tauri-plugin-dialog = "2.0.0"
-tauri-plugin-notification = "2.0.0"
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
-
-[features]
-default = ["custom-protocol"]
-custom-protocol = ["tauri/custom-protocol"]`
+    "path": "src-tauri/Cargo.toml",
+    "name": "Cargo.toml",
+    "category": "rust",
+    "language": "toml",
+    "description": "وابستگی‌های راست (Rust Crate) برای اپلیکیشن گروه آموزشی سورنا",
+    "content": "[package]\nname = \"sorna-app\"\nversion = \"1.0.0\"\ndescription = \"Sorna Educational Group Android Mobile Application (Tauri 2 + WebView)\"\nauthors = [\"Sorna Educational Group <info@sornac.ir>\"]\nedition = \"2021\"\ndefault-run = \"sorna-app\"\n\n[lib]\nname = \"sorna_lib\"\ncrate-type = [\"staticlib\", \"cdylib\", \"rlib\"]\n\n[build-dependencies]\ntauri-build = { version = \"2.0.0\", features = [] }\n\n[dependencies]\ntauri = { version = \"2.0.0\", features = [] }\ntauri-plugin-opener = \"2.0.0\"\ntauri-plugin-dialog = \"2.0.0\"\ntauri-plugin-notification = \"2.0.0\"\nserde = { version = \"1.0\", features = [\"derive\"] }\nserde_json = \"1.0\"\n\n[features]\ndefault = [\"custom-protocol\"]\ncustom-protocol = [\"tauri/custom-protocol\"]\n"
   },
   {
-    path: 'src-tauri/src/lib.rs',
-    name: 'lib.rs',
-    category: 'rust',
-    language: 'rust',
-    description: 'نقطه ورود موبایل در توری ۲ با تعریف اینترسیس و کنترلرهای بومی',
-    content: `use tauri::Manager;
-
-#[tauri::command]
-fn get_app_info() -> serde_json::Value {
-    serde_json::json!({
-        "name": "Amvaj Sarmad",
-        "package": "com.amvajsarmad.app",
-        "target_url": "https://amvajsarmad.com",
-        "version": "1.0.0",
-        "framework": "Tauri 2 + Android WebView",
-        "django_backend": "Django 5.2 (PostgreSQL + Redis + Celery + Nginx)"
-    })
-}
-
-#[cfg_attr(mobile, tauri::mobile_entry_point)]
-pub fn run() {
-    tauri::Builder::default()
-        .plugin(tauri_plugin_opener::init())
-        .plugin(tauri_plugin_notification::init())
-        .plugin(tauri_plugin_dialog::init())
-        .invoke_handler(tauri::generate_handler![get_app_info])
-        .setup(|_app| {
-            Ok(())
-        })
-        .run(tauri::generate_context!())
-        .expect("error while running Amvaj Sarmad tauri application");
-}`
+    "path": "src-tauri/src/lib.rs",
+    "name": "lib.rs",
+    "category": "rust",
+    "language": "rust",
+    "description": "نقطه ورود موبایل در توری ۲ برای گروه آموزشی سورنا",
+    "content": "use tauri::Manager;\n\n#[tauri::command]\nfn get_app_info() -> serde_json::Value {\n    serde_json::json!({\n        \"name\": \"گروه آموزشی سورنا\",\n        \"package\": \"ir.sornac.app\",\n        \"target_url\": \"https://sornac.ir/\",\n        \"version\": \"1.0.0\",\n        \"framework\": \"Tauri 2 + Android WebView\"\n    })\n}\n\n#[cfg_attr(mobile, tauri::mobile_entry_point)]\npub fn run() {\n    tauri::Builder::default()\n        .plugin(tauri_plugin_opener::init())\n        .plugin(tauri_plugin_notification::init())\n        .plugin(tauri_plugin_dialog::init())\n        .invoke_handler(tauri::generate_handler![get_app_info])\n        .setup(|_app| {\n            Ok(())\n        })\n        .run(tauri::generate_context!())\n        .expect(\"error while running Sorna tauri application\");\n}\n"
   },
   {
-    path: 'src-tauri/gen/android/settings.gradle.kts',
-    name: 'settings.gradle.kts',
-    category: 'gradle',
-    language: 'groovy',
-    description: 'تنظیمات مخازن Maven و Google برای پروژه گریدل اندروید',
-    content: `pluginManagement {
-    repositories {
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-    }
-}
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-
-rootProject.name = "AmvajSarmadApp"
-include(":app")`
+    "path": "src-tauri/gen/android/settings.gradle.kts",
+    "name": "settings.gradle.kts",
+    "category": "gradle",
+    "language": "groovy",
+    "description": "تنظیمات مخازن Maven و Google برای پروژه SornaApp",
+    "content": "pluginManagement {\n    repositories {\n        google()\n        mavenCentral()\n        gradlePluginPortal()\n    }\n}\ndependencyResolutionManagement {\n    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)\n    repositories {\n        google()\n        mavenCentral()\n    }\n}\n\nrootProject.name = \"SornaApp\"\ninclude(\":app\")\n"
   },
   {
-    path: 'src-tauri/gen/android/build.gradle.kts',
-    name: 'build.gradle.kts',
-    category: 'gradle',
-    language: 'groovy',
-    description: 'پلاگین‌های ریشه Android Gradle Plugin 8.3.2 و Kotlin 1.9.23',
-    content: `plugins {
-    id("com.android.application") version "8.3.2" apply false
-    id("org.jetbrains.kotlin.android") version "1.9.23" apply false
-}`
+    "path": "src-tauri/gen/android/build.gradle.kts",
+    "name": "build.gradle.kts",
+    "category": "gradle",
+    "language": "groovy",
+    "description": "پلاگین‌های ریشه Android Gradle Plugin 8.3.2 و Kotlin 1.9.23",
+    "content": "// Top-level build file where you can add configuration options common to all sub-projects/modules.\nplugins {\n    id(\"com.android.application\") version \"8.3.2\" apply false\n    id(\"org.jetbrains.kotlin.android\") version \"1.9.23\" apply false\n}\n\ntasks.register(\"clean\", Delete::class) {\n    delete(rootProject.layout.buildDirectory)\n}\n"
   },
   {
-    path: 'src-tauri/gen/android/gradle.properties',
-    name: 'gradle.properties',
-    category: 'gradle',
-    language: 'groovy',
-    description: 'تنظیمات حافظه JVM و فعال‌سازی AndroidX',
-    content: `org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
-android.useAndroidX=true
-android.nonTransitiveRClass=true
-kotlin.code.style=official`
+    "path": "src-tauri/gen/android/gradle.properties",
+    "name": "gradle.properties",
+    "category": "gradle",
+    "language": "groovy",
+    "description": "تنظیمات حافظه JVM و فعال‌سازی AndroidX",
+    "content": "org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8\nandroid.useAndroidX=true\nandroid.nonTransitiveRClass=true\nkotlin.code.style=official\n"
   },
   {
-    path: 'src-tauri/gen/android/app/build.gradle.kts',
-    name: 'app/build.gradle.kts',
-    category: 'gradle',
-    language: 'groovy',
-    description: 'اسکریپت بیلد ماژول اپ با کامپایلر API 34 و کتابخانه‌های WebKit و SwipeRefreshLayout',
-    content: `plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
-}
-
-android {
-    namespace = "com.amvajsarmad.app"
-    compileSdk = 34
-
-    defaultConfig {
-        applicationId = "com.amvajsarmad.app"
-        minSdk = 26
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0.0"
-
-        vectorDrawables {
-            useSupportLibrary = true
-        }
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            isShrinkResources = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-            signingConfig = signingConfigs.getByName("debug")
-        }
-        debug {
-            applicationIdSuffix = ".debug"
-            isDebuggable = true
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-}
-
-dependencies {
-    implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.11.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("androidx.webkit:webkit:1.10.0")
-    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
-    implementation("androidx.activity:activity-ktx:1.8.2")
-}`
+    "path": "src-tauri/gen/android/app/build.gradle.kts",
+    "name": "app/build.gradle.kts",
+    "category": "gradle",
+    "language": "groovy",
+    "description": "اسکریپت بیلد ماژول اپ با شناسه ir.sornac.app و کامپایلر API 34",
+    "content": "plugins {\n    id(\"com.android.application\")\n    id(\"org.jetbrains.kotlin.android\")\n}\n\nandroid {\n    namespace = \"ir.sornac.app\"\n    compileSdk = 34\n\n    defaultConfig {\n        applicationId = \"ir.sornac.app\"\n        minSdk = 26\n        targetSdk = 34\n        versionCode = 1\n        versionName = \"1.0.0\"\n\n        testInstrumentationRunner = \"androidx.test.runner.AndroidJUnitRunner\"\n        vectorDrawables {\n            useSupportLibrary = true\n        }\n\n        manifestPlaceholders[\"appLabel\"] = \"گروه آموزشی سورنا\"\n    }\n\n    buildTypes {\n        release {\n            isMinifyEnabled = false\n            isShrinkResources = false\n            proguardFiles(\n                getDefaultProguardFile(\"proguard-android-optimize.txt\"),\n                \"proguard-rules.pro\"\n            )\n            signingConfig = signingConfigs.getByName(\"debug\")\n        }\n        debug {\n            applicationIdSuffix = \".debug\"\n            isDebuggable = true\n        }\n    }\n\n    compileOptions {\n        sourceCompatibility = JavaVersion.VERSION_17\n        targetCompatibility = JavaVersion.VERSION_17\n    }\n\n    kotlinOptions {\n        jvmTarget = \"17\"\n    }\n\n    buildFeatures {\n        viewBinding = true\n        buildConfig = true\n    }\n}\n\ndependencies {\n    implementation(\"androidx.core:core-ktx:1.12.0\")\n    implementation(\"androidx.appcompat:appcompat:1.6.1\")\n    implementation(\"com.google.android.material:material:1.11.0\")\n    implementation(\"androidx.constraintlayout:constraintlayout:2.1.4\")\n    implementation(\"androidx.webkit:webkit:1.10.0\")\n    implementation(\"androidx.swiperefreshlayout:swiperefreshlayout:1.1.0\")\n    implementation(\"androidx.activity:activity-ktx:1.8.2\")\n}\n"
   },
   {
-    path: 'src-tauri/gen/android/app/proguard-rules.pro',
-    name: 'proguard-rules.pro',
-    category: 'gradle',
-    language: 'groovy',
-    description: 'قوانین Proguard جهت حفظ متدهای WebView و JavascriptInterface',
-    content: `-keepclassmembers class * {
-    @android.webkit.JavascriptInterface <methods>;
-}
--keep class com.amvajsarmad.app.** { *; }
--dontwarn com.amvajsarmad.app.**
--keep public class android.webkit.** { *; }`
+    "path": "src-tauri/gen/android/app/proguard-rules.pro",
+    "name": "proguard-rules.pro",
+    "category": "gradle",
+    "language": "groovy",
+    "description": "قوانین Proguard برای پکیج ir.sornac.app",
+    "content": "# Proguard rules for Sorna Educational Group Android App\n-keepclassmembers class * {\n    @android.webkit.JavascriptInterface <methods>;\n}\n\n-keep class ir.sornac.app.** { *; }\n-dontwarn ir.sornac.app.**\n\n-keep public class android.webkit.** { *; }\n"
   },
   {
-    path: 'src-tauri/gen/android/app/src/main/AndroidManifest.xml',
-    name: 'AndroidManifest.xml',
-    category: 'android',
-    language: 'xml',
-    description: 'مجوزهای دسترسی به اینترنت، دیپ‌لینک‌های amvajsarmad.com و تنظیمات امنیتی اپلیکیشن',
-    content: `<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
-
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-feature android:name="android.hardware.camera" android:required="false" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-
-    <application
-        android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name"
-        android:roundIcon="@drawable/ic_launcher"
-        android:supportsRtl="true"
-        android:theme="@style/Theme.AmvajSarmad"
-        android:networkSecurityConfig="@xml/network_security_config"
-        android:usesCleartextTraffic="false"
-        tools:targetApi="34">
-
-        <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:launchMode="singleTask"
-            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|smallestScreenSize"
-            android:windowSoftInputMode="adjustResize">
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" android:host="amvajsarmad.com" />
-                <data android:scheme="https" android:host="*.amvajsarmad.com" />
-            </intent-filter>
-        </activity>
-
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="\${applicationId}.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
-        </provider>
-    </application>
-</manifest>`
+    "path": "src-tauri/gen/android/app/src/main/AndroidManifest.xml",
+    "name": "AndroidManifest.xml",
+    "category": "android",
+    "language": "xml",
+    "description": "مانیفست اندروید با نام «گروه آموزشی سورنا»، دیپ‌لینک sornac.ir و آیکون سورنا",
+    "content": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\n    xmlns:tools=\"http://schemas.android.com/tools\">\n\n    <uses-permission android:name=\"android.permission.INTERNET\" />\n    <uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\" />\n    <uses-permission android:name=\"android.permission.CAMERA\" />\n    <uses-feature android:name=\"android.hardware.camera\" android:required=\"false\" />\n    <uses-permission android:name=\"android.permission.READ_EXTERNAL_STORAGE\" android:maxSdkVersion=\"32\" />\n    <uses-permission android:name=\"android.permission.READ_MEDIA_IMAGES\" />\n    <uses-permission android:name=\"android.permission.POST_NOTIFICATIONS\" />\n\n    <application\n        android:allowBackup=\"true\"\n        android:icon=\"@mipmap/ic_launcher\"\n        android:label=\"@string/app_name\"\n        android:roundIcon=\"@mipmap/ic_launcher\"\n        android:supportsRtl=\"true\"\n        android:theme=\"@style/Theme.Sorna\"\n        android:networkSecurityConfig=\"@xml/network_security_config\"\n        android:usesCleartextTraffic=\"false\"\n        tools:targetApi=\"34\">\n\n        <activity\n            android:name=\".MainActivity\"\n            android:exported=\"true\"\n            android:launchMode=\"singleTask\"\n            android:configChanges=\"orientation|screenSize|screenLayout|keyboardHidden|smallestScreenSize\"\n            android:windowSoftInputMode=\"adjustResize\">\n\n            <intent-filter>\n                <action android:name=\"android.intent.action.MAIN\" />\n                <category android:name=\"android.intent.category.LAUNCHER\" />\n            </intent-filter>\n\n            <intent-filter android:autoVerify=\"true\">\n                <action android:name=\"android.intent.action.VIEW\" />\n                <category android:name=\"android.intent.category.DEFAULT\" />\n                <category android:name=\"android.intent.category.BROWSABLE\" />\n                <data\n                    android:scheme=\"https\"\n                    android:host=\"sornac.ir\" />\n                <data\n                    android:scheme=\"https\"\n                    android:host=\"*.sornac.ir\" />\n            </intent-filter>\n        </activity>\n\n        <provider\n            android:name=\"androidx.core.content.FileProvider\"\n            android:authorities=\"${applicationId}.fileprovider\"\n            android:exported=\"false\"\n            android:grantUriPermissions=\"true\">\n            <meta-data\n                android:name=\"android.support.FILE_PROVIDER_PATHS\"\n                android:resource=\"@xml/file_paths\" />\n        </provider>\n\n    </application>\n\n</manifest>\n"
   },
   {
-    path: 'src-tauri/gen/android/app/src/main/res/drawable/ic_launcher.xml',
-    name: 'ic_launcher.xml',
-    category: 'android',
-    language: 'xml',
-    description: 'آیکون برداری (Vector Drawable) رسمی اپلیکیشن امواج سرمد',
-    content: `<?xml version="1.0" encoding="utf-8"?>
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="108dp"
-    android:height="108dp"
-    android:viewportWidth="108"
-    android:viewportHeight="108">
-    <path
-        android:fillColor="#0369A1"
-        android:pathData="M0,0h108v108h-108z" />
-    <path
-        android:fillColor="#0284C7"
-        android:pathData="M54,14A40,40 0,1 1,14 54A40,40 0,0 1,54 14z" />
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M30,60 C38,44 46,44 54,60 C62,76 70,76 78,60 L78,68 C70,84 62,84 54,68 C46,52 38,52 30,68 Z" />
-    <path
-        android:fillColor="#38BDF8"
-        android:pathData="M30,44 C38,28 46,28 54,44 C62,60 70,60 78,44 L78,52 C70,68 62,68 54,52 C46,36 38,36 30,52 Z" />
-</vector>`
+    "path": "src-tauri/gen/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml",
+    "name": "ic_launcher.xml",
+    "category": "android",
+    "language": "xml",
+    "description": "آیکون تطبیقی (Adaptive Icon) متصل به لوگوی PNG گروه آموزشی سورنا",
+    "content": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<adaptive-icon xmlns:android=\"http://schemas.android.com/apk/res/android\">\n    <background android:drawable=\"@color/surface\" />\n    <foreground>\n        <inset\n            android:drawable=\"@drawable/ic_launcher_logo\"\n            android:inset=\"14%\" />\n    </foreground>\n</adaptive-icon>\n"
   },
   {
-    path: 'src-tauri/gen/android/app/src/main/res/values/strings.xml',
-    name: 'strings.xml',
-    category: 'android',
-    language: 'xml',
-    description: 'رشته‌های متنی فارسی و انگلیسی اپلیکیشن اندروید',
-    content: `<resources>
-    <string name="app_name">امواج سرمد</string>
-    <string name="app_name_en">Amvaj Sarmad</string>
-    <string name="website_url">https://amvajsarmad.com</string>
-    <string name="error_no_internet_title">عدم دسترسی به اینترنت</string>
-    <string name="error_no_internet_msg">اتصال دستگاه شما به اینترنت قطع شده است. لطفاً وضعیت وای‌فای یا دیتای سیم‌کارت را بررسی نمایید.</string>
-    <string name="error_server_title">خطا در بارگذاری فروشگاه</string>
-    <string name="error_server_msg">امکان اتصال به سرورهای امواج سرمد فراهم نشد. لطفاً چند لحظه دیگر دوباره تلاش نمایید.</string>
-    <string name="btn_retry">تلاش مجدد</string>
-    <string name="btn_check_network">تنظیمات شبکه</string>
-    <string name="download_started">شروع دریافت فایل…</string>
-    <string name="download_completed">دریافت فایل با موفقیت انجام شد</string>
-</resources>`
+    "path": "src-tauri/gen/android/app/src/main/res/values/strings.xml",
+    "name": "strings.xml",
+    "category": "android",
+    "language": "xml",
+    "description": "عنوان برنامه «گروه آموزشی سورنا» و رشته‌های متنی فارسی",
+    "content": "<resources>\n    <string name=\"app_name\">گروه آموزشی سورنا</string>\n    <string name=\"app_name_en\">Sorna Educational Group</string>\n    <string name=\"website_url\">https://sornac.ir/</string>\n    <string name=\"error_no_internet_title\">عدم دسترسی به اینترنت</string>\n    <string name=\"error_no_internet_msg\">اتصال دستگاه شما به اینترنت قطع شده است. لطفاً وضعیت وای‌فای یا دیتای سیم‌کارت را بررسی نمایید.</string>\n    <string name=\"error_server_title\">خطا در بارگذاری سامانه سورنا</string>\n    <string name=\"error_server_msg\">امکان اتصال به سرورهای گروه آموزشی سورنا فراهم نشد. لطفاً چند لحظه دیگر دوباره تلاش نمایید.</string>\n    <string name=\"btn_retry\">تلاش مجدد</string>\n    <string name=\"btn_check_network\">تنظیمات شبکه</string>\n    <string name=\"download_started\">شروع دریافت فایل آموزشی…</string>\n    <string name=\"download_completed\">دریافت فایل با موفقیت انجام شد</string>\n</resources>\n"
   },
   {
-    path: 'src-tauri/gen/android/app/src/main/res/values/colors.xml',
-    name: 'colors.xml',
-    category: 'android',
-    language: 'xml',
-    description: 'پالت رنگی برند امواج سرمد برای نوار وضعیت و صفحات خطا',
-    content: `<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <color name="primary">#0284C7</color>
-    <color name="primary_dark">#0369A1</color>
-    <color name="primary_light">#38BDF8</color>
-    <color name="accent">#F59E0B</color>
-    <color name="background_light">#F8FAFC</color>
-    <color name="background_dark">#0F172A</color>
-    <color name="surface">#FFFFFF</color>
-    <color name="text_primary">#0F172A</color>
-    <color name="text_secondary">#64748B</color>
-    <color name="status_bar_color">#0369A1</color>
-</resources>`
+    "path": "src-tauri/gen/android/app/src/main/res/values/colors.xml",
+    "name": "colors.xml",
+    "category": "android",
+    "language": "xml",
+    "description": "پالت رنگی سرمه‌ای (#001F54) و طلایی (#EEA83B) لوگوی سورنا",
+    "content": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<resources>\n    <color name=\"primary\">#001F54</color>\n    <color name=\"primary_dark\">#001538</color>\n    <color name=\"primary_light\">#1E3A8A</color>\n    <color name=\"accent\">#EEA83B</color>\n    <color name=\"background_light\">#F8FAFC</color>\n    <color name=\"background_dark\">#001538</color>\n    <color name=\"surface\">#FFFFFF</color>\n    <color name=\"text_primary\">#001F54</color>\n    <color name=\"text_secondary\">#475569</color>\n    <color name=\"status_bar_color\">#001F54</color>\n</resources>\n"
   },
   {
-    path: 'src-tauri/gen/android/app/src/main/res/values/styles.xml',
-    name: 'styles.xml',
-    category: 'android',
-    language: 'xml',
-    description: 'استایل و تم بدون اکشن‌بار (NoActionBar) برای نمایش تمام‌صفحه وب‌سایت',
-    content: `<resources>
-    <style name="Theme.AmvajSarmad" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryVariant">@color/primary_dark</item>
-        <item name="colorOnPrimary">@color/surface</item>
-        <item name="colorSecondary">@color/accent</item>
-        <item name="android:statusBarColor">@color/status_bar_color</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="android:navigationBarColor">@color/background_dark</item>
-    </style>
-</resources>`
+    "path": "src-tauri/gen/android/app/src/main/res/values/styles.xml",
+    "name": "styles.xml",
+    "category": "android",
+    "language": "xml",
+    "description": "تم اختصاصی Theme.Sorna بدون اکشن‌بار",
+    "content": "<resources>\n    <style name=\"Theme.Sorna\" parent=\"Theme.MaterialComponents.DayNight.NoActionBar\">\n        <item name=\"colorPrimary\">@color/primary</item>\n        <item name=\"colorPrimaryVariant\">@color/primary_dark</item>\n        <item name=\"colorOnPrimary\">@color/surface</item>\n        <item name=\"colorSecondary\">@color/accent</item>\n        <item name=\"android:statusBarColor\">@color/status_bar_color</item>\n        <item name=\"android:windowLightStatusBar\">false</item>\n        <item name=\"android:navigationBarColor\">@color/background_dark</item>\n    </style>\n</resources>\n"
   },
   {
-    path: 'src-tauri/gen/android/app/src/main/res/xml/network_security_config.xml',
-    name: 'network_security_config.xml',
-    category: 'android',
-    language: 'xml',
-    description: 'تنظیمات امنیتی شبکه اندروید با الزام HTTPS و گواهی‌های معتبر SSL',
-    content: `<?xml version="1.0" encoding="utf-8"?>
-<network-security-config>
-    <domain-config cleartextTrafficPermitted="false">
-        <domain includeSubdomains="true">amvajsarmad.com</domain>
-        <trust-anchors>
-            <certificates src="system" />
-            <certificates src="user" />
-        </trust-anchors>
-    </domain-config>
-    <base-config cleartextTrafficPermitted="false">
-        <trust-anchors>
-            <certificates src="system" />
-        </trust-anchors>
-    </base-config>
-</network-security-config>`
+    "path": "src-tauri/gen/android/app/src/main/res/xml/network_security_config.xml",
+    "name": "network_security_config.xml",
+    "category": "android",
+    "language": "xml",
+    "description": "تنظیمات امنیتی HTTPS برای دامنه sornac.ir",
+    "content": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<network-security-config>\n    <domain-config cleartextTrafficPermitted=\"false\">\n        <domain includeSubdomains=\"true\">sornac.ir</domain>\n        <trust-anchors>\n            <certificates src=\"system\" />\n            <certificates src=\"user\" />\n        </trust-anchors>\n    </domain-config>\n\n    <base-config cleartextTrafficPermitted=\"false\">\n        <trust-anchors>\n            <certificates src=\"system\" />\n        </trust-anchors>\n    </base-config>\n</network-security-config>\n"
   },
   {
-    path: 'src-tauri/gen/android/app/src/main/res/xml/file_paths.xml',
-    name: 'file_paths.xml',
-    category: 'android',
-    language: 'xml',
-    description: 'مسیرهای مجاز FileProvider برای آپلود مستقیم عکس از دوربین در فرم‌های جنگو',
-    content: `<?xml version="1.0" encoding="utf-8"?>
-<paths>
-    <external-files-path name="my_images" path="Pictures" />
-    <external-cache-path name="cached_images" path="/" />
-    <cache-path name="internal_cache" path="/" />
-</paths>`
+    "path": "src-tauri/gen/android/app/src/main/res/xml/file_paths.xml",
+    "name": "file_paths.xml",
+    "category": "android",
+    "language": "xml",
+    "description": "مسیرهای FileProvider برای آپلود فایل و تصویر",
+    "content": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<paths>\n    <external-files-path name=\"my_images\" path=\"Pictures\" />\n    <external-cache-path name=\"cached_images\" path=\"/\" />\n    <cache-path name=\"internal_cache\" path=\"/\" />\n</paths>\n"
   },
   {
-    path: 'src-tauri/gen/android/app/src/main/java/com/amvajsarmad/app/MainActivity.kt',
-    name: 'MainActivity.kt',
-    category: 'android',
-    language: 'kotlin',
-    description: 'کد کامل MainActivity.kt (نسخه ۴۵۰ خطی کامل بدون حذفیات، سازگار با SDK 34)',
-    content: `package com.amvajsarmad.app
-
-import android.annotation.SuppressLint
-import android.app.DownloadManager
-import android.content.Context
-import android.content.Intent
-import android.graphics.Bitmap
-import android.net.ConnectivityManager
-import android.net.Network
-import android.net.NetworkCapabilities
-import android.net.NetworkRequest
-import android.net.Uri
-import android.os.Bundle
-import android.os.Environment
-import android.provider.MediaStore
-import android.view.Gravity
-import android.view.View
-import android.webkit.CookieManager
-import android.webkit.URLUtil
-import android.webkit.ValueCallback
-import android.webkit.WebChromeClient
-import android.webkit.WebResourceError
-import android.webkit.WebResourceRequest
-import android.webkit.WebSettings
-import android.webkit.WebView
-import android.webkit.WebViewClient
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
-import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import java.io.File
-import java.io.IOException
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-
-class MainActivity : AppCompatActivity() {
-
-    private lateinit var webView: WebView
-    private lateinit var progressBar: ProgressBar
-    private lateinit var swipeRefresh: SwipeRefreshLayout
-    private lateinit var errorLayout: LinearLayout
-    private lateinit var btnRetry: Button
-    private lateinit var tvErrorTitle: TextView
-    private lateinit var tvErrorDesc: TextView
-
-    private var fileUploadCallback: ValueCallback<Array<Uri>>? = null
-    private var cameraImageUri: Uri? = null
-
-    private lateinit var filePickerLauncher: ActivityResultLauncher<Intent>
-
-    private val targetUrl = "https://amvajsarmad.com"
-    private var isOffline = false
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(buildDynamicLayout())
-
-        setupActivityLaunchers()
-        setupWebView()
-        setupBackNavigation()
-        setupNetworkMonitoring()
-
-        if (isNetworkAvailable()) {
-            loadTargetWebsite(targetUrl)
-        } else {
-            showErrorState(
-                getString(R.string.error_no_internet_title),
-                getString(R.string.error_no_internet_msg)
-            )
-        }
-    }
-
-    @SuppressLint("SetJavaScriptEnabled")
-    private fun setupWebView() {
-        val settings = webView.settings
-        settings.apply {
-            javaScriptEnabled = true
-            domStorageEnabled = true
-            databaseEnabled = true
-            allowFileAccess = true
-            allowContentAccess = true
-            loadWithOverviewMode = true
-            useWideViewPort = true
-            setSupportZoom(true)
-            builtInZoomControls = true
-            displayZoomControls = false
-            cacheMode = WebSettings.LOAD_DEFAULT
-            mediaPlaybackRequiresUserGesture = false
-            mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
-            userAgentString = "\${settings.userAgentString ?: ""} AmvajSarmadAndroidApp/1.0.0"
-        }
-
-        val cookieManager = CookieManager.getInstance()
-        cookieManager.setAcceptCookie(true)
-        cookieManager.setAcceptThirdPartyCookies(webView, true)
-
-        swipeRefresh.setColorSchemeResources(R.color.primary)
-        swipeRefresh.setOnRefreshListener {
-            if (isNetworkAvailable()) {
-                hideErrorState()
-                webView.reload()
-            } else {
-                swipeRefresh.isRefreshing = false
-                showErrorState(
-                    getString(R.string.error_no_internet_title),
-                    getString(R.string.error_no_internet_msg)
-                )
-            }
-        }
-
-        webView.webViewClient = object : WebViewClient() {
-            override fun shouldOverrideUrlLoading(
-                view: WebView?,
-                request: WebResourceRequest?
-            ): Boolean {
-                val url = request?.url?.toString() ?: return false
-                return handleUrlNavigation(url)
-            }
-
-            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-                super.onPageStarted(view, url, favicon)
-                progressBar.visibility = View.VISIBLE
-            }
-
-            override fun onPageFinished(view: WebView?, url: String?) {
-                super.onPageFinished(view, url)
-                progressBar.visibility = View.GONE
-                swipeRefresh.isRefreshing = false
-                CookieManager.getInstance().flush()
-            }
-
-            override fun onReceivedError(
-                view: WebView?,
-                request: WebResourceRequest?,
-                error: WebResourceError?
-            ) {
-                super.onReceivedError(view, request, error)
-                if (request?.isForMainFrame == true) {
-                    progressBar.visibility = View.GONE
-                    swipeRefresh.isRefreshing = false
-                    showErrorState(
-                        getString(R.string.error_server_title),
-                        getString(R.string.error_server_msg)
-                    )
-                }
-            }
-        }
-
-        webView.webChromeClient = object : WebChromeClient() {
-            override fun onProgressChanged(view: WebView?, newProgress: Int) {
-                super.onProgressChanged(view, newProgress)
-                progressBar.progress = newProgress
-                if (newProgress == 100) {
-                    progressBar.visibility = View.GONE
-                }
-            }
-
-            override fun onShowFileChooser(
-                webView: WebView?,
-                filePathCallback: ValueCallback<Array<Uri>>?,
-                fileChooserParams: FileChooserParams?
-            ): Boolean {
-                fileUploadCallback?.onReceiveValue(null)
-                fileUploadCallback = filePathCallback
-                openFileSelector()
-                return true
-            }
-        }
-
-        webView.setDownloadListener { url, userAgent, contentDisposition, mimetype, _ ->
-            handleDownload(url, userAgent, contentDisposition, mimetype)
-        }
-
-        btnRetry.setOnClickListener {
-            if (isNetworkAvailable()) {
-                hideErrorState()
-                progressBar.visibility = View.VISIBLE
-                webView.reload()
-            } else {
-                Toast.makeText(
-                    this,
-                    R.string.error_no_internet_msg,
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
-    }
-
-    private fun handleUrlNavigation(url: String): Boolean {
-        val uri = Uri.parse(url)
-        val host = uri.host?.lowercase(Locale.ROOT) ?: ""
-
-        if (url.startsWith("tel:") || url.startsWith("mailto:") ||
-            url.startsWith("sms:") || url.startsWith("whatsapp:") ||
-            url.startsWith("tg:")
-        ) {
-            try {
-                startActivity(Intent(Intent.ACTION_VIEW, uri))
-            } catch (e: Exception) {
-                Toast.makeText(this, "برنامه‌ای برای باز کردن این پیوند یافت نشد", Toast.LENGTH_SHORT).show()
-            }
-            return true
-        }
-
-        val isBankingGateway = host.endsWith("shaparak.ir") ||
-                host.contains("zarinpal.com") ||
-                host.contains("idpay.ir") ||
-                host.contains("pay.ir") ||
-                host.contains("nextpay.org") ||
-                host.contains("sadadpsp.ir") ||
-                host.contains("asanpardakht.ir")
-
-        val isInternalDomain = host == "amvajsarmad.com" || host.endsWith(".amvajsarmad.com")
-
-        return if (isInternalDomain || isBankingGateway) {
-            false
-        } else {
-            try {
-                val intent = Intent(Intent.ACTION_VIEW, uri)
-                startActivity(intent)
-            } catch (e: Exception) {
-            }
-            true
-        }
-    }
-
-    private fun handleDownload(
-        url: String?,
-        userAgent: String?,
-        contentDisposition: String?,
-        mimeType: String?
-    ) {
-        if (url.isNullOrEmpty()) return
-        try {
-            val request = DownloadManager.Request(Uri.parse(url))
-            val filename = URLUtil.guessFileName(url, contentDisposition, mimeType)
-
-            val cookies = CookieManager.getInstance().getCookie(url)
-            if (!cookies.isNullOrEmpty()) {
-                request.addRequestHeader("cookie", cookies)
-            }
-            if (!userAgent.isNullOrEmpty()) {
-                request.addRequestHeader("User-Agent", userAgent)
-            }
-            request.setDescription(getString(R.string.download_started))
-            request.setTitle(filename)
-            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, filename)
-
-            val dm = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-            dm.enqueue(request)
-
-            Toast.makeText(this, getString(R.string.download_started), Toast.LENGTH_SHORT).show()
-        } catch (e: Exception) {
-            Toast.makeText(this, "خطا در شروع دانلود: \${e.localizedMessage}", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun setupBackNavigation() {
-        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                if (errorLayout.visibility == View.VISIBLE && webView.canGoBack()) {
-                    hideErrorState()
-                    webView.goBack()
-                } else if (webView.canGoBack()) {
-                    webView.goBack()
-                } else {
-                    isEnabled = false
-                    onBackPressedDispatcher.onBackPressed()
-                }
-            }
-        })
-    }
-
-    private fun setupActivityLaunchers() {
-        filePickerLauncher = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) { result ->
-            val data = result.data
-            var results: Array<Uri>? = null
-            if (result.resultCode == RESULT_OK) {
-                if (data != null && data.data != null) {
-                    results = arrayOf(data.data!!)
-                } else if (cameraImageUri != null) {
-                    results = arrayOf(cameraImageUri!!)
-                }
-            }
-            fileUploadCallback?.onReceiveValue(results)
-            fileUploadCallback = null
-        }
-    }
-
-    private fun openFileSelector() {
-        val galleryIntent = Intent(Intent.ACTION_GET_CONTENT).apply {
-            addCategory(Intent.CATEGORY_OPENABLE)
-            type = "*/*"
-            putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/*", "application/pdf"))
-        }
-
-        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        if (cameraIntent.resolveActivity(packageManager) != null) {
-            val photoFile: File? = try {
-                createImageFile()
-            } catch (ex: IOException) {
-                null
-            }
-            if (photoFile != null) {
-                cameraImageUri = FileProvider.getUriForFile(
-                    this,
-                    "\${applicationContext.packageName}.fileprovider",
-                    photoFile
-                )
-                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, cameraImageUri)
-            }
-        }
-
-        val chooser = Intent.createChooser(galleryIntent, "انتخاب فایل یا عکس")
-        if (cameraIntent.resolveActivity(packageManager) != null && cameraImageUri != null) {
-            chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(cameraIntent))
-        }
-
-        filePickerLauncher.launch(chooser)
-    }
-
-    @Throws(IOException::class)
-    private fun createImageFile(): File {
-        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-        val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        return File.createTempFile("JPEG_\${timeStamp}_", ".jpg", storageDir)
-    }
-
-    private fun setupNetworkMonitoring() {
-        val connectivityManager =
-            getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val request = NetworkRequest.Builder()
-            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-            .build()
-
-        connectivityManager.registerNetworkCallback(
-            request,
-            object : ConnectivityManager.NetworkCallback() {
-                override fun onAvailable(network: Network) {
-                    runOnUiThread {
-                        if (isOffline) {
-                            isOffline = false
-                            if (errorLayout.visibility == View.VISIBLE) {
-                                hideErrorState()
-                                webView.reload()
-                            }
-                        }
-                    }
-                }
-
-                override fun onLost(network: Network) {
-                    runOnUiThread {
-                        isOffline = true
-                    }
-                }
-            }
-        )
-    }
-
-    private fun isNetworkAvailable(): Boolean {
-        val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val activeNetwork = cm.activeNetwork ?: return false
-        val caps = cm.getNetworkCapabilities(activeNetwork) ?: return false
-        return caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-    }
-
-    private fun loadTargetWebsite(url: String) {
-        hideErrorState()
-        webView.loadUrl(url)
-    }
-
-    private fun showErrorState(title: String, desc: String) {
-        tvErrorTitle.text = title
-        tvErrorDesc.text = desc
-        errorLayout.visibility = View.VISIBLE
-        webView.visibility = View.GONE
-    }
-
-    private fun hideErrorState() {
-        errorLayout.visibility = View.GONE
-        webView.visibility = View.VISIBLE
-    }
-
-    private fun buildDynamicLayout(): View {
-        val root = ConstraintLayout(this).apply {
-            layoutParams = ConstraintLayout.LayoutParams(
-                ConstraintLayout.LayoutParams.MATCH_PARENT,
-                ConstraintLayout.LayoutParams.MATCH_PARENT
-            )
-        }
-
-        swipeRefresh = SwipeRefreshLayout(this).apply {
-            id = View.generateViewId()
-            layoutParams = ConstraintLayout.LayoutParams(
-                ConstraintLayout.LayoutParams.MATCH_PARENT,
-                ConstraintLayout.LayoutParams.MATCH_PARENT
-            )
-        }
-
-        webView = WebView(this).apply {
-            id = View.generateViewId()
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT
-            )
-        }
-        swipeRefresh.addView(webView)
-        root.addView(swipeRefresh)
-
-        progressBar = ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal).apply {
-            id = View.generateViewId()
-            max = 100
-            progressDrawable?.setTint(ContextCompat.getColor(this@MainActivity, R.color.primary))
-            val lp = ConstraintLayout.LayoutParams(
-                ConstraintLayout.LayoutParams.MATCH_PARENT,
-                8
-            )
-            lp.topToTop = ConstraintLayout.LayoutParams.PARENT_ID
-            layoutParams = lp
-        }
-        root.addView(progressBar)
-
-        errorLayout = LinearLayout(this).apply {
-            id = View.generateViewId()
-            orientation = LinearLayout.VERTICAL
-            gravity = Gravity.CENTER
-            setBackgroundColor(ContextCompat.getColor(this@MainActivity, R.color.background_light))
-            visibility = View.GONE
-            setPadding(48, 48, 48, 48)
-            val lp = ConstraintLayout.LayoutParams(
-                ConstraintLayout.LayoutParams.MATCH_PARENT,
-                ConstraintLayout.LayoutParams.MATCH_PARENT
-            )
-            layoutParams = lp
-        }
-
-        tvErrorTitle = TextView(this).apply {
-            textSize = 20f
-            setTextColor(ContextCompat.getColor(this@MainActivity, R.color.text_primary))
-            gravity = Gravity.CENTER
-            setPadding(0, 24, 0, 16)
-        }
-        errorLayout.addView(tvErrorTitle)
-
-        tvErrorDesc = TextView(this).apply {
-            textSize = 14f
-            setTextColor(ContextCompat.getColor(this@MainActivity, R.color.text_secondary))
-            gravity = Gravity.CENTER
-            setPadding(0, 0, 0, 32)
-        }
-        errorLayout.addView(tvErrorDesc)
-
-        btnRetry = Button(this).apply {
-            text = getString(R.string.btn_retry)
-            setBackgroundColor(ContextCompat.getColor(this@MainActivity, R.color.primary))
-            setTextColor(ContextCompat.getColor(this@MainActivity, R.color.surface))
-        }
-        errorLayout.addView(btnRetry)
-
-        root.addView(errorLayout)
-        return root
-    }
-
-    override fun onResume() {
-        super.onResume()
-        webView.onResume()
-        CookieManager.getInstance().flush()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        webView.onPause()
-        CookieManager.getInstance().flush()
-    }
-
-    override fun onDestroy() {
-        webView.destroy()
-        super.onDestroy()
-    }
-}`
-  },
-  {
-    path: 'build-apk.sh',
-    name: 'build-apk.sh',
-    category: 'ci',
-    language: 'bash',
-    description: 'اسکریپت یک‌کلیکی بیلد محلی در لینوکس و مک (Linux/macOS)',
-    content: `#!/usr/bin/env bash
-set -e
-echo "Building Amvaj Sarmad Android APK..."
-cd src-tauri/gen/android
-if command -v gradle &> /dev/null; then
-  gradle assembleDebug
-else
-  chmod +x gradlew
-  ./gradlew assembleDebug
-fi
-echo "APK Ready: src-tauri/gen/android/app/build/outputs/apk/debug/app-debug.apk"`
-  },
-  {
-    path: 'Dockerfile.build-apk',
-    name: 'Dockerfile.build-apk',
-    category: 'ci',
-    language: 'yaml',
-    description: 'داکرفایل استاندارد برای ساخت ایزوله APK در هر سیستمی',
-    content: `FROM eclipse-temurin:17-jdk-jammy
-RUN apt-get update && apt-get install -y curl git unzip build-essential
-ENV ANDROID_HOME=/opt/android-sdk
-ENV PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
-RUN mkdir -p $ANDROID_HOME/cmdline-tools && \\
-    curl -o /tmp/cmdline-tools.zip https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip && \\
-    unzip -q /tmp/cmdline-tools.zip -d $ANDROID_HOME/cmdline-tools && \\
-    mv $ANDROID_HOME/cmdline-tools/cmdline-tools $ANDROID_HOME/cmdline-tools/latest && \\
-    rm /tmp/cmdline-tools.zip
-RUN yes | sdkmanager --licenses && sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
-WORKDIR /app
-COPY . .
-WORKDIR /app/src-tauri/gen/android
-RUN chmod +x gradlew && ./gradlew assembleDebug`
+    "path": "src-tauri/gen/android/app/src/main/java/ir/sornac/app/MainActivity.kt",
+    "name": "MainActivity.kt",
+    "category": "android",
+    "language": "kotlin",
+    "description": "کد کامل MainActivity.kt برای وب‌سایت https://sornac.ir/ در پکیج ir.sornac.app",
+    "content": "package ir.sornac.app\n\nimport android.annotation.SuppressLint\nimport android.app.DownloadManager\nimport android.content.Context\nimport android.content.Intent\nimport android.graphics.Bitmap\nimport android.net.ConnectivityManager\nimport android.net.Network\nimport android.net.NetworkCapabilities\nimport android.net.NetworkRequest\nimport android.net.Uri\nimport android.os.Bundle\nimport android.os.Environment\nimport android.provider.MediaStore\nimport android.view.Gravity\nimport android.view.View\nimport android.webkit.CookieManager\nimport android.webkit.URLUtil\nimport android.webkit.ValueCallback\nimport android.webkit.WebChromeClient\nimport android.webkit.WebResourceError\nimport android.webkit.WebResourceRequest\nimport android.webkit.WebSettings\nimport android.webkit.WebView\nimport android.webkit.WebViewClient\nimport android.widget.Button\nimport android.widget.LinearLayout\nimport android.widget.ProgressBar\nimport android.widget.TextView\nimport android.widget.Toast\nimport androidx.activity.OnBackPressedCallback\nimport androidx.activity.result.ActivityResultLauncher\nimport androidx.activity.result.contract.ActivityResultContracts\nimport androidx.appcompat.app.AppCompatActivity\nimport androidx.constraintlayout.widget.ConstraintLayout\nimport androidx.core.content.ContextCompat\nimport androidx.core.content.FileProvider\nimport androidx.swiperefreshlayout.widget.SwipeRefreshLayout\nimport java.io.File\nimport java.io.IOException\nimport java.text.SimpleDateFormat\nimport java.util.Date\nimport java.util.Locale\n\nclass MainActivity : AppCompatActivity() {\n\n    private lateinit var webView: WebView\n    private lateinit var progressBar: ProgressBar\n    private lateinit var swipeRefresh: SwipeRefreshLayout\n    private lateinit var errorLayout: LinearLayout\n    private lateinit var btnRetry: Button\n    private lateinit var tvErrorTitle: TextView\n    private lateinit var tvErrorDesc: TextView\n\n    private var fileUploadCallback: ValueCallback<Array<Uri>>? = null\n    private var cameraImageUri: Uri? = null\n\n    private lateinit var filePickerLauncher: ActivityResultLauncher<Intent>\n\n    private val targetUrl = \"https://sornac.ir/\"\n    private var isOffline = false\n\n    override fun onCreate(savedInstanceState: Bundle?) {\n        super.onCreate(savedInstanceState)\n        setContentView(buildDynamicLayout())\n\n        setupActivityLaunchers()\n        setupWebView()\n        setupBackNavigation()\n        setupNetworkMonitoring()\n\n        if (isNetworkAvailable()) {\n            loadTargetWebsite(targetUrl)\n        } else {\n            showErrorState(\n                getString(R.string.error_no_internet_title),\n                getString(R.string.error_no_internet_msg)\n            )\n        }\n    }\n\n    @SuppressLint(\"SetJavaScriptEnabled\")\n    private fun setupWebView() {\n        val settings = webView.settings\n        settings.apply {\n            javaScriptEnabled = true\n            domStorageEnabled = true\n            databaseEnabled = true\n            allowFileAccess = true\n            allowContentAccess = true\n            loadWithOverviewMode = true\n            useWideViewPort = true\n            setSupportZoom(true)\n            builtInZoomControls = true\n            displayZoomControls = false\n            cacheMode = WebSettings.LOAD_DEFAULT\n            mediaPlaybackRequiresUserGesture = false\n            mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW\n            userAgentString = \"${settings.userAgentString ?: \"\"} SornaAndroidApp/1.0.0\"\n        }\n\n        val cookieManager = CookieManager.getInstance()\n        cookieManager.setAcceptCookie(true)\n        cookieManager.setAcceptThirdPartyCookies(webView, true)\n\n        swipeRefresh.setColorSchemeResources(R.color.primary)\n        swipeRefresh.setOnRefreshListener {\n            if (isNetworkAvailable()) {\n                hideErrorState()\n                webView.reload()\n            } else {\n                swipeRefresh.isRefreshing = false\n                showErrorState(\n                    getString(R.string.error_no_internet_title),\n                    getString(R.string.error_no_internet_msg)\n                )\n            }\n        }\n\n        webView.webViewClient = object : WebViewClient() {\n            override fun shouldOverrideUrlLoading(\n                view: WebView?,\n                request: WebResourceRequest?\n            ): Boolean {\n                val url = request?.url?.toString() ?: return false\n                return handleUrlNavigation(url)\n            }\n\n            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {\n                super.onPageStarted(view, url, favicon)\n                progressBar.visibility = View.VISIBLE\n            }\n\n            override fun onPageFinished(view: WebView?, url: String?) {\n                super.onPageFinished(view, url)\n                progressBar.visibility = View.GONE\n                swipeRefresh.isRefreshing = false\n                CookieManager.getInstance().flush()\n            }\n\n            override fun onReceivedError(\n                view: WebView?,\n                request: WebResourceRequest?,\n                error: WebResourceError?\n            ) {\n                super.onReceivedError(view, request, error)\n                if (request?.isForMainFrame == true) {\n                    progressBar.visibility = View.GONE\n                    swipeRefresh.isRefreshing = false\n                    showErrorState(\n                        getString(R.string.error_server_title),\n                        getString(R.string.error_server_msg)\n                    )\n                }\n            }\n        }\n\n        webView.webChromeClient = object : WebChromeClient() {\n            override fun onProgressChanged(view: WebView?, newProgress: Int) {\n                super.onProgressChanged(view, newProgress)\n                progressBar.progress = newProgress\n                if (newProgress == 100) {\n                    progressBar.visibility = View.GONE\n                }\n            }\n\n            override fun onShowFileChooser(\n                webView: WebView?,\n                filePathCallback: ValueCallback<Array<Uri>>?,\n                fileChooserParams: FileChooserParams?\n            ): Boolean {\n                fileUploadCallback?.onReceiveValue(null)\n                fileUploadCallback = filePathCallback\n                openFileSelector()\n                return true\n            }\n        }\n\n        webView.setDownloadListener { url, userAgent, contentDisposition, mimetype, _ ->\n            handleDownload(url, userAgent, contentDisposition, mimetype)\n        }\n\n        btnRetry.setOnClickListener {\n            if (isNetworkAvailable()) {\n                hideErrorState()\n                progressBar.visibility = View.VISIBLE\n                webView.reload()\n            } else {\n                Toast.makeText(\n                    this,\n                    R.string.error_no_internet_msg,\n                    Toast.LENGTH_SHORT\n                ).show()\n            }\n        }\n    }\n\n    private fun handleUrlNavigation(url: String): Boolean {\n        val uri = Uri.parse(url)\n        val host = uri.host?.lowercase(Locale.ROOT) ?: \"\"\n\n        if (url.startsWith(\"tel:\") || url.startsWith(\"mailto:\") ||\n            url.startsWith(\"sms:\") || url.startsWith(\"whatsapp:\") ||\n            url.startsWith(\"tg:\")\n        ) {\n            try {\n                startActivity(Intent(Intent.ACTION_VIEW, uri))\n            } catch (e: Exception) {\n                Toast.makeText(this, \"برنامه‌ای برای باز کردن این پیوند یافت نشد\", Toast.LENGTH_SHORT).show()\n            }\n            return true\n        }\n\n        val isBankingGateway = host.endsWith(\"shaparak.ir\") ||\n                host.contains(\"zarinpal.com\") ||\n                host.contains(\"idpay.ir\") ||\n                host.contains(\"pay.ir\") ||\n                host.contains(\"nextpay.org\") ||\n                host.contains(\"sadadpsp.ir\") ||\n                host.contains(\"asanpardakht.ir\")\n\n        val isInternalDomain = host == \"sornac.ir\" || host.endsWith(\".sornac.ir\")\n\n        return if (isInternalDomain || isBankingGateway) {\n            false\n        } else {\n            try {\n                val intent = Intent(Intent.ACTION_VIEW, uri)\n                startActivity(intent)\n            } catch (e: Exception) {\n            }\n            true\n        }\n    }\n\n    private fun handleDownload(\n        url: String?,\n        userAgent: String?,\n        contentDisposition: String?,\n        mimeType: String?\n    ) {\n        if (url.isNullOrEmpty()) return\n        try {\n            val request = DownloadManager.Request(Uri.parse(url))\n            val filename = URLUtil.guessFileName(url, contentDisposition, mimeType)\n\n            val cookies = CookieManager.getInstance().getCookie(url)\n            if (!cookies.isNullOrEmpty()) {\n                request.addRequestHeader(\"cookie\", cookies)\n            }\n            if (!userAgent.isNullOrEmpty()) {\n                request.addRequestHeader(\"User-Agent\", userAgent)\n            }\n            request.setDescription(getString(R.string.download_started))\n            request.setTitle(filename)\n            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)\n            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, filename)\n\n            val dm = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager\n            dm.enqueue(request)\n\n            Toast.makeText(this, getString(R.string.download_started), Toast.LENGTH_SHORT).show()\n        } catch (e: Exception) {\n            Toast.makeText(this, \"خطا در شروع دانلود: ${e.localizedMessage}\", Toast.LENGTH_SHORT).show()\n        }\n    }\n\n    private fun setupBackNavigation() {\n        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {\n            override fun handleOnBackPressed() {\n                if (errorLayout.visibility == View.VISIBLE && webView.canGoBack()) {\n                    hideErrorState()\n                    webView.goBack()\n                } else if (webView.canGoBack()) {\n                    webView.goBack()\n                } else {\n                    isEnabled = false\n                    onBackPressedDispatcher.onBackPressed()\n                }\n            }\n        })\n    }\n\n    private fun setupActivityLaunchers() {\n        filePickerLauncher = registerForActivityResult(\n            ActivityResultContracts.StartActivityForResult()\n        ) { result ->\n            val data = result.data\n            var results: Array<Uri>? = null\n            if (result.resultCode == RESULT_OK) {\n                if (data != null && data.data != null) {\n                    results = arrayOf(data.data!!)\n                } else if (cameraImageUri != null) {\n                    results = arrayOf(cameraImageUri!!)\n                }\n            }\n            fileUploadCallback?.onReceiveValue(results)\n            fileUploadCallback = null\n        }\n    }\n\n    private fun openFileSelector() {\n        val galleryIntent = Intent(Intent.ACTION_GET_CONTENT).apply {\n            addCategory(Intent.CATEGORY_OPENABLE)\n            type = \"*/*\"\n            putExtra(Intent.EXTRA_MIME_TYPES, arrayOf(\"image/*\", \"application/pdf\"))\n        }\n\n        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)\n        if (cameraIntent.resolveActivity(packageManager) != null) {\n            val photoFile: File? = try {\n                createImageFile()\n            } catch (ex: IOException) {\n                null\n            }\n            if (photoFile != null) {\n                cameraImageUri = FileProvider.getUriForFile(\n                    this,\n                    \"${applicationContext.packageName}.fileprovider\",\n                    photoFile\n                )\n                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, cameraImageUri)\n            }\n        }\n\n        val chooser = Intent.createChooser(galleryIntent, \"انتخاب فایل یا عکس\")\n        if (cameraIntent.resolveActivity(packageManager) != null && cameraImageUri != null) {\n            chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(cameraIntent))\n        }\n\n        filePickerLauncher.launch(chooser)\n    }\n\n    @Throws(IOException::class)\n    private fun createImageFile(): File {\n        val timeStamp = SimpleDateFormat(\"yyyyMMdd_HHmmss\", Locale.getDefault()).format(Date())\n        val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)\n        return File.createTempFile(\"JPEG_${timeStamp}_\", \".jpg\", storageDir)\n    }\n\n    private fun setupNetworkMonitoring() {\n        val connectivityManager =\n            getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager\n        val request = NetworkRequest.Builder()\n            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)\n            .build()\n\n        connectivityManager.registerNetworkCallback(\n            request,\n            object : ConnectivityManager.NetworkCallback() {\n                override fun onAvailable(network: Network) {\n                    runOnUiThread {\n                        if (isOffline) {\n                            isOffline = false\n                            if (errorLayout.visibility == View.VISIBLE) {\n                                hideErrorState()\n                                webView.reload()\n                            }\n                        }\n                    }\n                }\n\n                override fun onLost(network: Network) {\n                    runOnUiThread {\n                        isOffline = true\n                    }\n                }\n            }\n        )\n    }\n\n    private fun isNetworkAvailable(): Boolean {\n        val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager\n        val activeNetwork = cm.activeNetwork ?: return false\n        val caps = cm.getNetworkCapabilities(activeNetwork) ?: return false\n        return caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)\n    }\n\n    private fun loadTargetWebsite(url: String) {\n        hideErrorState()\n        webView.loadUrl(url)\n    }\n\n    private fun showErrorState(title: String, desc: String) {\n        tvErrorTitle.text = title\n        tvErrorDesc.text = desc\n        errorLayout.visibility = View.VISIBLE\n        webView.visibility = View.GONE\n    }\n\n    private fun hideErrorState() {\n        errorLayout.visibility = View.GONE\n        webView.visibility = View.VISIBLE\n    }\n\n    private fun buildDynamicLayout(): View {\n        val root = ConstraintLayout(this).apply {\n            layoutParams = ConstraintLayout.LayoutParams(\n                ConstraintLayout.LayoutParams.MATCH_PARENT,\n                ConstraintLayout.LayoutParams.MATCH_PARENT\n            )\n        }\n\n        swipeRefresh = SwipeRefreshLayout(this).apply {\n            id = View.generateViewId()\n            layoutParams = ConstraintLayout.LayoutParams(\n                ConstraintLayout.LayoutParams.MATCH_PARENT,\n                ConstraintLayout.LayoutParams.MATCH_PARENT\n            )\n        }\n\n        webView = WebView(this).apply {\n            id = View.generateViewId()\n            layoutParams = LinearLayout.LayoutParams(\n                LinearLayout.LayoutParams.MATCH_PARENT,\n                LinearLayout.LayoutParams.MATCH_PARENT\n            )\n        }\n        swipeRefresh.addView(webView)\n        root.addView(swipeRefresh)\n\n        progressBar = ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal).apply {\n            id = View.generateViewId()\n            max = 100\n            progressDrawable?.setTint(ContextCompat.getColor(this@MainActivity, R.color.accent))\n            val lp = ConstraintLayout.LayoutParams(\n                ConstraintLayout.LayoutParams.MATCH_PARENT,\n                8\n            )\n            lp.topToTop = ConstraintLayout.LayoutParams.PARENT_ID\n            layoutParams = lp\n        }\n        root.addView(progressBar)\n\n        errorLayout = LinearLayout(this).apply {\n            id = View.generateViewId()\n            orientation = LinearLayout.VERTICAL\n            gravity = Gravity.CENTER\n            setBackgroundColor(ContextCompat.getColor(this@MainActivity, R.color.background_light))\n            visibility = View.GONE\n            setPadding(48, 48, 48, 48)\n            val lp = ConstraintLayout.LayoutParams(\n                ConstraintLayout.LayoutParams.MATCH_PARENT,\n                ConstraintLayout.LayoutParams.MATCH_PARENT\n            )\n            layoutParams = lp\n        }\n\n        tvErrorTitle = TextView(this).apply {\n            textSize = 20f\n            setTextColor(ContextCompat.getColor(this@MainActivity, R.color.text_primary))\n            gravity = Gravity.CENTER\n            setPadding(0, 24, 0, 16)\n        }\n        errorLayout.addView(tvErrorTitle)\n\n        tvErrorDesc = TextView(this).apply {\n            textSize = 14f\n            setTextColor(ContextCompat.getColor(this@MainActivity, R.color.text_secondary))\n            gravity = Gravity.CENTER\n            setPadding(0, 0, 0, 32)\n        }\n        errorLayout.addView(tvErrorDesc)\n\n        btnRetry = Button(this).apply {\n            text = getString(R.string.btn_retry)\n            setBackgroundColor(ContextCompat.getColor(this@MainActivity, R.color.primary))\n            setTextColor(ContextCompat.getColor(this@MainActivity, R.color.surface))\n        }\n        errorLayout.addView(btnRetry)\n\n        root.addView(errorLayout)\n        return root\n    }\n\n    override fun onResume() {\n        super.onResume()\n        webView.onResume()\n        CookieManager.getInstance().flush()\n    }\n\n    override fun onPause() {\n        super.onPause()\n        webView.onPause()\n        CookieManager.getInstance().flush()\n    }\n\n    override fun onDestroy() {\n        webView.destroy()\n        super.onDestroy()\n    }\n}\n"
   }
 ];

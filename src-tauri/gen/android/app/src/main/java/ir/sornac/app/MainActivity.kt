@@ -1,4 +1,4 @@
-package com.amvajsarmad.app
+package ir.sornac.app
 
 import android.annotation.SuppressLint
 import android.app.DownloadManager
@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var filePickerLauncher: ActivityResultLauncher<Intent>
 
-    private val targetUrl = "https://amvajsarmad.com"
+    private val targetUrl = "https://sornac.ir/"
     private var isOffline = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -97,7 +97,7 @@ class MainActivity : AppCompatActivity() {
             cacheMode = WebSettings.LOAD_DEFAULT
             mediaPlaybackRequiresUserGesture = false
             mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
-            userAgentString = "${settings.userAgentString ?: ""} AmvajSarmadAndroidApp/1.0.0"
+            userAgentString = "${settings.userAgentString ?: ""} SornaAndroidApp/1.0.0"
         }
 
         val cookieManager = CookieManager.getInstance()
@@ -220,7 +220,7 @@ class MainActivity : AppCompatActivity() {
                 host.contains("sadadpsp.ir") ||
                 host.contains("asanpardakht.ir")
 
-        val isInternalDomain = host == "amvajsarmad.com" || host.endsWith(".amvajsarmad.com")
+        val isInternalDomain = host == "sornac.ir" || host.endsWith(".sornac.ir")
 
         return if (isInternalDomain || isBankingGateway) {
             false
@@ -229,7 +229,6 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(Intent.ACTION_VIEW, uri)
                 startActivity(intent)
             } catch (e: Exception) {
-                // Ignore if no browser available
             }
             true
         }
@@ -424,7 +423,7 @@ class MainActivity : AppCompatActivity() {
         progressBar = ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal).apply {
             id = View.generateViewId()
             max = 100
-            progressDrawable?.setTint(ContextCompat.getColor(this@MainActivity, R.color.primary))
+            progressDrawable?.setTint(ContextCompat.getColor(this@MainActivity, R.color.accent))
             val lp = ConstraintLayout.LayoutParams(
                 ConstraintLayout.LayoutParams.MATCH_PARENT,
                 8

@@ -1,9 +1,9 @@
 /**
- * Navigation and URL routing rules for Amvaj Sarmad Android WebView (Tauri 2)
+ * Navigation and URL routing rules for Sorna Educational Group Android WebView (Tauri 2)
  * Ensures strict security:
- * 1. Internal amvajsarmad.com domains remain inside the app
- * 2. Iranian payment gateways (Shaparak, Zarinpal, etc.) are allowed for checkout transactions
- * 3. Payment returns back to amvajsarmad.com seamlessly restore the user's order session
+ * 1. Internal sornac.ir domains remain inside the app
+ * 2. Iranian payment gateways (Shaparak, Zarinpal, etc.) are allowed for course/order checkout
+ * 3. Payment returns back to sornac.ir seamlessly restore the user's session
  * 4. Special schemes (tel, mailto, sms, whatsapp, tg) launch native Android intents
  * 5. Other external links open in system browser (Chrome/Firefox)
  */
@@ -16,7 +16,7 @@ export type UrlClassification =
   | 'EXTERNAL'
   | 'BLOCKED';
 
-export const PRIMARY_DOMAIN = 'amvajsarmad.com';
+export const PRIMARY_DOMAIN = 'sornac.ir';
 
 // Official Iranian banking & payment gateways
 export const PAYMENT_GATEWAY_PATTERNS = [
@@ -125,8 +125,8 @@ export function classifyUrl(urlString: string): {
     };
   }
 
-  // In production Android, HTTP is disallowed for amvajsarmad.com to protect CSRF & sessions
-  if (trimmed.startsWith('http://amvajsarmad.com')) {
+  // In production Android, HTTP is upgraded to HTTPS for sornac.ir to protect sessions
+  if (trimmed.startsWith('http://sornac.ir')) {
     return {
       type: 'INTERNAL',
       reason: 'ارتقای خودکار به HTTPS برای حفظ امنیت نشست کاربر',
@@ -137,7 +137,7 @@ export function classifyUrl(urlString: string): {
   if (isPaymentReturnUrl(trimmed)) {
     return {
       type: 'PAYMENT_RETURN',
-      reason: 'بازگشت از درگاه پرداخت به فروشگاه امواج سرمد',
+      reason: 'بازگشت از درگاه پرداخت به سامانه گروه آموزشی سورنا',
       targetAction: 'WEBVIEW_LOAD',
     };
   }
@@ -145,7 +145,7 @@ export function classifyUrl(urlString: string): {
   if (isInternalUrl(trimmed)) {
     return {
       type: 'INTERNAL',
-      reason: 'صفحه داخلی وب‌سایت امواج سرمد',
+      reason: 'صفحه داخلی وب‌سایت گروه آموزشی سورنا (sornac.ir)',
       targetAction: 'WEBVIEW_LOAD',
     };
   }
@@ -179,7 +179,7 @@ export function getNetworkErrorPersianCopy(errorCode: number | string): NetworkE
     case -2: // ERROR_HOST_LOOKUP
       return {
         title: 'عدم دسترسی به اینترنت',
-        description: 'اتصال به سرورهای امواج سرمد برقرار نشد. لطفاً اتصال اینترنت خود را بررسی کنید.',
+        description: 'اتصال به سرورهای گروه آموزشی سورنا برقرار نشد. لطفاً اتصال اینترنت خود را بررسی کنید.',
         advice: 'بررسی کنید داده همراه (موبایل دیتا) یا وای‌فای روشن باشد.',
         canRetry: true,
       };
@@ -193,7 +193,7 @@ export function getNetworkErrorPersianCopy(errorCode: number | string): NetworkE
     case -8: // ERROR_TIMEOUT
       return {
         title: 'زمان اتصال به پایان رسید (Timeout)',
-        description: 'سرعت اینترنت شما برای بارگذاری اطلاعات فروشگاه پایین است.',
+        description: 'سرعت اینترنت شما برای بارگذاری اطلاعات سامانه سورنا پایین است.',
         advice: 'لطفاً وضعیت شبکه را بررسی کرده و مجدداً تلاش فرمایید.',
         canRetry: true,
       };
@@ -207,7 +207,7 @@ export function getNetworkErrorPersianCopy(errorCode: number | string): NetworkE
     default:
       return {
         title: 'خطا در بارگذاری صفحه',
-        description: 'امکان دریافت محتوای امواج سرمد در این لحظه وجود ندارد.',
+        description: 'امکان دریافت محتوای گروه آموزشی سورنا در این لحظه وجود ندارد.',
         advice: 'روی دکمه تلاش مجدد ضربه بزنید.',
         canRetry: true,
       };
